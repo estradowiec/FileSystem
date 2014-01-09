@@ -1,0 +1,16 @@
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\bin\Debug\hibernate.cfg.xml
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\bin\Debug\FileSystemDAL.dll
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\bin\Debug\FileSystemDAL.pdb
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\bin\Debug\FileSystemLogger.dll
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\bin\Debug\Iesi.Collections.dll
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\bin\Debug\NHibernate.dll
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\bin\Debug\NLog.dll
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\bin\Debug\FileSystemLogger.pdb
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\bin\Debug\Iesi.Collections.pdb
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\bin\Debug\Iesi.Collections.xml
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\bin\Debug\NHibernate.pdb
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\bin\Debug\NHibernate.xml
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\bin\Debug\NLog.xml
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\obj\Debug\FileSystemDAL.csprojResolveAssemblyReference.cache
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\obj\Debug\FileSystemDAL.dll
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\obj\Debug\FileSystemDAL.pdb

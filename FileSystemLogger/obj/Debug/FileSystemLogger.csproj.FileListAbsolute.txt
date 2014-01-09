@@ -1,0 +1,6 @@
+E:\Programowanie\ASP .NET\FileSystem\FileSystemLogger\bin\Debug\FileSystemLogger.dll
+E:\Programowanie\ASP .NET\FileSystem\FileSystemLogger\bin\Debug\FileSystemLogger.pdb
+E:\Programowanie\ASP .NET\FileSystem\FileSystemLogger\bin\Debug\NLog.dll
+E:\Programowanie\ASP .NET\FileSystem\FileSystemLogger\bin\Debug\NLog.xml
+E:\Programowanie\ASP .NET\FileSystem\FileSystemLogger\obj\Debug\FileSystemLogger.dll
+E:\Programowanie\ASP .NET\FileSystem\FileSystemLogger\obj\Debug\FileSystemLogger.pdb

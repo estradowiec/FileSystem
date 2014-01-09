@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="FileSystemDAL"
+                   namespace="FileSystemDAL.Models">
+
+  <class name="Person">
+    <id name="PersonId" column="PersonID">
+      <generator class="identity"/>
+    </id>
+    <property name="PersonName" />
+    <property name="Password" />
+    <property name="Email" />
+    <property name="RepositoryId" column="RepositoryID" />
+    <property name="Permission"/>
+    <property name="DateAttach" />
+  </class>
+
+  <class name="Repository">
+    <id name="RepositoryId" column="RepositoryID">
+      <generator class="identity"/>
+    </id>
+    <property name="RepositoryName" />
+    <property name="IsActive"/>
+    <property name="DateAttach" />
+  </class>
+
+  <class name="Files">
+    <id name="FileId" column="FileID">
+      <generator class="identity"/>
+    </id>
+    <property name="FileNames" />
+    <property name="FileSize" />
+    <property name="FileExtension" />
+    <property name="DateAttach"/>
+    <property name="Permission"/>
+    <property name="RepositoryId" column="RepositoryID"/>
+    <property name="FolderId" column="FolderID"/>
+  </class>
+
+  <class name="Folder">
+    <id name="FolderId" column="FolderID">
+      <generator class="identity"/>
+    </id>
+    <property name="FolderName" />
+    <property name="DateAttach" />
+    <property name="RepositoryId" column="RepositoryID" />
+    <property name="Permission"/>
+    <property name="ParrentId" column="ParrentID"/>
+  </class>
+
+  <class name="Partnership">
+    <id name="PartnershipId" column="PartnershipID">
+      <generator class="identity"/>
+    </id>
+    <property name="RelatingFromRepositoryId" column="RelatingFromRepositoryID"/>
+    <property name="RelatingToRepositoryId" column="RelatingToRepositoryID"/>
+    <property name="IsAccept"/>
+  </class>
+
+  <class name="SharedFolder">
+    <id name="SharedFolderId" column="SharedFolderID">
+      <generator class="identity"/>
+    </id>
+    <property name ="FolderId" column="FolderID"/>
+    <property name ="RepositoryId" column="RepositoryID"/>
+  </class>
+
+  <class name="SharedFile">
+    <id name="SharedFileId" column="SharedFileID">
+      <generator class="identity"/>
+    </id>
+    <property name ="FileId" column="FileID"/>
+    <property name ="RepositoryId" column="RepositoryID"/>
+  </class>
+  
+</hibernate-mapping>
+

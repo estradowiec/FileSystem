@@ -1,0 +1,12 @@
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL.Tests\bin\Debug\hibernate.cfg.xml
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL.Tests\bin\Debug\FileSystemDAL.Tests.dll
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL.Tests\bin\Debug\FileSystemDAL.Tests.pdb
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL.Tests\bin\Debug\FileSystemDAL.dll
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL.Tests\bin\Debug\Iesi.Collections.dll
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL.Tests\bin\Debug\NHibernate.dll
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL.Tests\bin\Debug\nunit.framework.dll
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL.Tests\bin\Debug\System.Data.SqlServerCe.dll
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL.Tests\bin\Debug\FileSystemDAL.pdb
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL.Tests\obj\Debug\FileSystemDAL.Tests.csprojResolveAssemblyReference.cache
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL.Tests\obj\Debug\FileSystemDAL.Tests.dll
+E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL.Tests\obj\Debug\FileSystemDAL.Tests.pdb
