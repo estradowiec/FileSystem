@@ -10,3 +10,15 @@ E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL.Tests\bin\Debug\FileSystemDAL
 E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL.Tests\obj\Debug\FileSystemDAL.Tests.csprojResolveAssemblyReference.cache
 E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL.Tests\obj\Debug\FileSystemDAL.Tests.dll
 E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL.Tests\obj\Debug\FileSystemDAL.Tests.pdb
+E:\Git\FileSystem\FileSystemDAL.Tests\obj\Debug\FileSystemDAL.Tests.csprojResolveAssemblyReference.cache
+E:\Git\FileSystem\FileSystemDAL.Tests\obj\Debug\FileSystemDAL.Tests.dll
+E:\Git\FileSystem\FileSystemDAL.Tests\bin\Debug\hibernate.cfg.xml
+E:\Git\FileSystem\FileSystemDAL.Tests\bin\Debug\FileSystemDAL.Tests.dll
+E:\Git\FileSystem\FileSystemDAL.Tests\bin\Debug\FileSystemDAL.Tests.pdb
+E:\Git\FileSystem\FileSystemDAL.Tests\bin\Debug\FileSystemDAL.dll
+E:\Git\FileSystem\FileSystemDAL.Tests\bin\Debug\Iesi.Collections.dll
+E:\Git\FileSystem\FileSystemDAL.Tests\bin\Debug\NHibernate.dll
+E:\Git\FileSystem\FileSystemDAL.Tests\bin\Debug\nunit.framework.dll
+E:\Git\FileSystem\FileSystemDAL.Tests\bin\Debug\System.Data.SqlServerCe.dll
+E:\Git\FileSystem\FileSystemDAL.Tests\bin\Debug\FileSystemDAL.pdb
+E:\Git\FileSystem\FileSystemDAL.Tests\obj\Debug\FileSystemDAL.Tests.pdb

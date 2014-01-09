@@ -14,3 +14,19 @@ E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\bin\Debug\NLog.xml
 E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\obj\Debug\FileSystemDAL.csprojResolveAssemblyReference.cache
 E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\obj\Debug\FileSystemDAL.dll
 E:\Programowanie\ASP .NET\FileSystem\FileSystemDAL\obj\Debug\FileSystemDAL.pdb
+E:\Git\FileSystem\FileSystemDAL\bin\Debug\hibernate.cfg.xml
+E:\Git\FileSystem\FileSystemDAL\bin\Debug\FileSystemDAL.dll
+E:\Git\FileSystem\FileSystemDAL\bin\Debug\FileSystemDAL.pdb
+E:\Git\FileSystem\FileSystemDAL\bin\Debug\FileSystemLogger.dll
+E:\Git\FileSystem\FileSystemDAL\bin\Debug\Iesi.Collections.dll
+E:\Git\FileSystem\FileSystemDAL\bin\Debug\NHibernate.dll
+E:\Git\FileSystem\FileSystemDAL\bin\Debug\NLog.dll
+E:\Git\FileSystem\FileSystemDAL\bin\Debug\FileSystemLogger.pdb
+E:\Git\FileSystem\FileSystemDAL\bin\Debug\Iesi.Collections.pdb
+E:\Git\FileSystem\FileSystemDAL\bin\Debug\Iesi.Collections.xml
+E:\Git\FileSystem\FileSystemDAL\bin\Debug\NHibernate.pdb
+E:\Git\FileSystem\FileSystemDAL\bin\Debug\NHibernate.xml
+E:\Git\FileSystem\FileSystemDAL\bin\Debug\NLog.xml
+E:\Git\FileSystem\FileSystemDAL\obj\Debug\FileSystemDAL.csprojResolveAssemblyReference.cache
+E:\Git\FileSystem\FileSystemDAL\obj\Debug\FileSystemDAL.dll
+E:\Git\FileSystem\FileSystemDAL\obj\Debug\FileSystemDAL.pdb

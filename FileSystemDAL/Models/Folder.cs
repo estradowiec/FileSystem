@@ -15,7 +15,7 @@ namespace FileSystemDAL.Models
     /// <summary>
     /// The folder.
     /// </summary>
-    public class Folder
+    public class Folder: IEquatable<Folder>
     {
         /// <summary>
         /// Gets or sets the folder id.
@@ -46,5 +46,48 @@ namespace FileSystemDAL.Models
         /// Gets or sets the parent id.
         /// </summary>
         public virtual int? ParrentId { get; set; }
+
+        /// <summary>
+        /// The equals.
+        /// </summary>
+        /// <param name="obj">
+        /// The obj.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            var other = (Folder)obj;
+            return this.FolderId.Equals(other.FolderId) && this.FolderName.Equals(other.FolderName)
+                && this.ParrentId.Equals(other.ParrentId) && this.Permission.Equals(other.Permission)
+                && this.RepositoryId.Equals(other.RepositoryId);
+        }
+
+        /// <summary>
+        /// The equals.
+        /// </summary>
+        /// <param name="other">
+        /// The other.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        public virtual bool Equals(Folder other)
+        {
+            if (other == null || this.GetType() != other.GetType())
+            {
+                return false;
+            }
+
+            return this.FolderId.Equals(other.FolderId) && this.FolderName.Equals(other.FolderName)
+                   && this.ParrentId.Equals(other.ParrentId) && this.Permission.Equals(other.Permission)
+                   && this.RepositoryId.Equals(other.RepositoryId);
+        }
     }
 }

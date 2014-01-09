@@ -51,6 +51,11 @@ namespace FileSystemDAL.Tests
         private Folder parrentFolder;
 
         /// <summary>
+        /// The inaccessible folder.
+        /// </summary>
+        private Folder inaccessibleFolder;
+
+        /// <summary>
         /// The init.
         /// </summary>
         [SetUp]
@@ -70,6 +75,16 @@ namespace FileSystemDAL.Tests
                                  RepositoryId = repository.RepositoryId
                              };
             this.rootFolder.FolderId = this.AddFolder(this.rootFolder);
+
+            this.inaccessibleFolder = new Folder
+            {
+                DateAttach = DateTime.Now,
+                FolderName = "InAccessible",
+                ParrentId = null,
+                Permission = EPermission.RepositoryAdmin,
+                RepositoryId = repository.RepositoryId
+            };
+            this.inaccessibleFolder.FolderId = this.AddFolder(this.inaccessibleFolder);
 
             this.parrentFolder = new Folder
             {
@@ -140,7 +155,7 @@ namespace FileSystemDAL.Tests
         [Test]
         public void GetFilesTest()
         {
-            var rootFiles = this.repositoryManager.GetFiles(this.rootFolder);
+            var rootFiles = this.repositoryManager.GetFiles(this.rootFolder.FolderId);
             Assert.AreEqual(rootFiles.Count(), this.listFileRootFolder.Count);
 
             foreach (var file in rootFiles)
@@ -151,11 +166,11 @@ namespace FileSystemDAL.Tests
                 }
                 else
                 {
-                    Assert.AreEqual(this.listFileRootFolder.Contains(file), true);
+                    Assert.Fail("Get files list contains higher permission");
                 }
             }
 
-            var parrentFiles = this.repositoryManager.GetFiles(this.parrentFolder);
+            var parrentFiles = this.repositoryManager.GetFiles(this.parrentFolder.FolderId);
             Assert.AreEqual(parrentFiles.Count(), this.listFileParrentFolder.Count - 1);
 
             foreach (var file in parrentFiles)
@@ -166,7 +181,44 @@ namespace FileSystemDAL.Tests
                 }
                 else
                 {
-                    Assert.AreEqual(this.listFileParrentFolder.Contains(file), false);
+                    Assert.Fail("Get files list contains higher permission");
+                }
+            }
+        }
+
+        /// <summary>
+        /// The get folder test.
+        /// </summary>
+        [Test]
+        public void GetFolderTest()
+        {
+            var rootFolders = this.repositoryManager.GetFolders(null);
+            Assert.AreEqual(rootFolders.Count, 1);
+
+            foreach (var folder in rootFolders)
+            {
+                if (folder.Permission >= this.repositoryManager.Permission)
+                {
+                    Assert.AreEqual(folder, this.rootFolder);
+                }
+                else
+                {
+                    Assert.Fail("Get folders list contains higher permission");
+                }
+            }
+
+            var parentFolders = this.repositoryManager.GetFolders(this.rootFolder.FolderId);
+            Assert.AreEqual(parentFolders.Count, 1);
+
+            foreach (var folder in parentFolders)
+            {
+                if (folder.Permission >= this.repositoryManager.Permission)
+                {
+                    Assert.AreEqual(folder, this.parrentFolder);
+                }
+                else
+                {
+                    Assert.Fail("Get folders list contains higher permission");
                 }
             }
         }
@@ -191,6 +243,7 @@ namespace FileSystemDAL.Tests
                         session.Delete(file);
                     }
 
+                    session.Delete(this.inaccessibleFolder);
                     session.Delete(this.parrentFolder);
                     session.Delete(this.rootFolder);
                     session.Delete(this.repositoryManager.Repository);

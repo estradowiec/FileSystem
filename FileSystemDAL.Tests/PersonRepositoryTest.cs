@@ -125,7 +125,7 @@ namespace FileSystemDAL.Tests
             this.personRepository.PartnershipManager.InviteFriend(this.friendRepository.MyRepository.Repository);
             this.friendRepository.AcceptInvitation(this.personRepository.MyRepository.Repository);
             this.personRepository.ShareFile(this.files.FileId, this.friendRepository.MyRepository.Repository.RepositoryId);
-            var friendFile = this.friendRepository.MyRepository.GetFiles(this.folder, this.personRepository.MyRepository.Repository).FirstOrDefault();
+            var friendFile = this.friendRepository.MyRepository.GetFiles(this.folder.FolderId, this.personRepository.MyRepository.Repository.RepositoryId).FirstOrDefault();
             this.personRepository.RemoveFriend(this.friendRepository.MyRepository.Repository);
             this.personRepository.UnsharedFile(this.files.FileId, this.friendRepository.MyRepository.Repository.RepositoryId);
             
