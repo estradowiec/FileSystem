@@ -1,0 +1,113 @@
+Create table Repository(
+RepositoryID int not null Identity(1,1),
+RepositoryName nvarchar(50) unique not null,
+DateAttach datetime,
+IsActive bit default(0),
+Primary Key(RepositoryID)
+)
+go
+
+Create table Person(
+PersonID int not null Identity(1,1),
+PersonName nvarchar(20) unique not null,
+Password varchar(32) not null,
+Email varchar(50) unique not null,
+Permission int not null,
+DateAttach DateTime default GetDate(),
+RepositoryID int not null,
+Primary Key(PersonID),
+Foreign Key(RepositoryID) references Repository(RepositoryID),
+)
+GO
+
+Create table Folder(
+FolderID int not null Identity(1,1),
+FolderName nvarchar(20) not null,
+DateAttach datetime,
+Permission int not null,
+RepositoryID int not null,
+ParrentID int,
+Primary Key(FolderID),
+Foreign Key(RepositoryID) references Repository(RepositoryID),
+Foreign Key(ParrentID) references Folder(FolderID),
+)
+GO
+
+Create table Files(
+FileID int not null Identity(1,1),
+FileNames nvarchar(40) not null,
+FileSize decimal(10) not null,
+FileExtension varchar(6),
+DateAttach datetime not null,
+Permission int not null,
+RepositoryID int not null,
+FolderID int not null,
+Primary Key(FileID),
+Foreign Key(RepositoryID) references Repository(RepositoryID),
+Foreign Key(FolderID) references Folder(FolderID),
+)
+GO
+
+Create table Partnership(
+PartnershipID int not null Identity(1,1),
+RelatingFromRepositoryID int not null,
+RelatingToRepositoryID int not null,
+IsAccept bit not null,
+Foreign key(RelatingFromRepositoryID) references Repository(RepositoryID),
+Foreign key(RelatingToRepositoryID) references Repository(RepositoryID)
+)
+GO
+
+create table SharedFolder(
+SharedFolderID int not null Identity(1,1),
+FolderID int not null,
+RepositoryID int not null,
+primary key(SharedFolderID),
+foreign key(FolderID) references Folder(FolderID),
+foreign key(RepositoryID) references Repository(RepositoryID)
+)
+GO
+
+create table SharedFile(
+SharedFileID int not null Identity(1,1),
+FileID int not null,
+RepositoryID int not null,
+primary key(SharedFileID),
+foreign key(FileID) references Files(FileID),
+foreign key(RepositoryID) references Repository(RepositoryID)
+)
+GO
+
+exec sp_configure filestream_access_level, 2 RECONFIGURE
+
+
+create table FileStorage(
+FileStorageID int not null Identity(1,1),
+RowId uniqueidentifier ROWGUIDCOL NOT NULL UNIQUE DEFAULT NEWSEQUENTIALID(),
+Content varbinary(max) FILESTREAM DEFAULT(0x),
+Primary Key(FileStorageID)
+);
+GO
+
+Create table Permission(
+PermissionID int not null Identity(1,1),
+PermissionValue int unique not null,
+Primary Key(PermissionID)
+)
+GO
+
+insert into FileStorage values(NEWID(), NEWID(),(Select * from openrowset(BULK N'E:\Data\fota.jpg',single_blob) as image) );
+insert into Company values(NewID(),'MegaSystems',GETDATE());
+insert into Permission values(newid(),3)
+
+
+declare @CompanyID UNIQUEIDENTIFIER, @PermissionID UNIQUEIDENTIFIER
+
+set @CompanyID = (Select CompanyID from Company where CompanyName='MegaSystems')
+set @PermissionID = (Select PermID from Permission where Permission=1)
+insert into Users values(newid(),'Tomek','Tomasz Nocoñ','tomek2','tomasz.nocon@gmail.com',@CompanyID,@PermissionID)
+
+declare @CompanyID UNIQUEIDENTIFIER, @PermissionID UNIQUEIDENTIFIER
+set @CompanyID = (Select CompanyID from Company where CompanyName='MegaSystems')
+set @PermissionID = (Select PermID from Permission where Permission=1)
+insert into Folder values(NEWID(),'AdminFiles',GETDATE(),@CompanyID,@PermissionID,NULL)

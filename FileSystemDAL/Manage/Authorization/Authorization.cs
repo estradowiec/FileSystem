@@ -2,21 +2,53 @@
 namespace FileSystemDAL.Manage
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Security.Cryptography;
     using System.Text;
+    using System.Threading.Tasks;
+    using Microsoft.AspNet.Identity;
     using FileSystemDAL.Enum;
     using FileSystemDAL.Helper;
     using FileSystemDAL.Models;
     using NHibernate;
     using NHibernate.Criterion;
-    using NHibernate.Linq;
+    using NHibernate.Mapping;
 
     /// <summary>
     /// The authorization.
     /// </summary>
     public class Authorization
     {
+        /// <summary>
+        /// The validate registration async.
+        /// </summary>
+        /// <param name="email">
+        /// The email.
+        /// </param>
+        /// <param name="repositoryName">
+        /// The repository name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
+        public async Task<IdentityResult> ValidateRegistrationAsync(string email, string repositoryName)
+        {
+            var errors = new List<string>();
+
+            if (this.VerifyEmail(email))
+            {
+                errors.Add("E-mail exist in system. Enter different e-mail.");
+            }
+
+            if (this.VerifyRepository(repositoryName))
+            {
+                errors.Add("Repository name exist in system. Enter different name.");
+            }
+
+            return errors.Any() ? IdentityResult.Failed(errors.ToArray()) : IdentityResult.Success;
+        }
+
         /// <summary>
         /// The verify email.
         /// </summary>
@@ -132,7 +164,7 @@ namespace FileSystemDAL.Manage
         /// <param name="repositoryName">
         /// The repository name.
         /// </param>
-        public void RegisterPerson(string email, string personName, string password, string repositoryName)
+        public Person RegisterPerson(string email, string personName, string password, string repositoryName)
         {
             var repository = new Repository
             {
@@ -155,7 +187,8 @@ namespace FileSystemDAL.Manage
                     RepositoryId = repositoryIdentifier
                 };
 
-                this.AddPerson(person);
+                person.PersonId = this.AddPerson(person);
+                return person;
             }
         }
 

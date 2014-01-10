@@ -30,3 +30,5 @@ E:\Git\FileSystem\FileSystemDAL\bin\Debug\NLog.xml
 E:\Git\FileSystem\FileSystemDAL\obj\Debug\FileSystemDAL.csprojResolveAssemblyReference.cache
 E:\Git\FileSystem\FileSystemDAL\obj\Debug\FileSystemDAL.dll
 E:\Git\FileSystem\FileSystemDAL\obj\Debug\FileSystemDAL.pdb
+E:\Git\FileSystem\FileSystemDAL\bin\Debug\Microsoft.AspNet.Identity.Core.dll
+E:\Git\FileSystem\FileSystemDAL\bin\Debug\Microsoft.AspNet.Identity.Core.xml

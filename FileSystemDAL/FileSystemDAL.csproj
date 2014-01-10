@@ -33,6 +33,9 @@
     <Reference Include="Iesi.Collections">
       <HintPath>C:\Windows\Microsoft.NET\NHibernate\Iesi.Collections.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.1.0.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate">
       <HintPath>C:\Windows\Microsoft.NET\NHibernate\NHibernate.dll</HintPath>
     </Reference>
