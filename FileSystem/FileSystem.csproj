@@ -159,7 +159,11 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AccountManagementController.cs" />
+    <Compile Include="Controllers\FriendsManagementController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\RepositoryController.cs" />
+    <Compile Include="Controllers\RepositoryManagementController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -169,18 +173,42 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap-select.css" />
+    <Content Include="Content\bootstrap-switch.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\jquery.dataTables.bootstrap.css" />
+    <Content Include="Content\jquery.dataTables.css" />
+    <Content Include="Content\jquery.fileupload.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="images\back_disabled.png" />
+    <Content Include="images\back_enabled.png" />
+    <Content Include="images\back_enabled_hover.png" />
+    <Content Include="images\favicon.ico" />
+    <Content Include="images\forward_disabled.png" />
+    <Content Include="images\forward_enabled.png" />
+    <Content Include="images\forward_enabled_hover.png" />
+    <Content Include="images\sort_asc.png" />
+    <Content Include="images\sort_asc_disabled.png" />
+    <Content Include="images\sort_both.png" />
+    <Content Include="images\sort_desc.png" />
+    <Content Include="images\sort_desc_disabled.png" />
+    <Content Include="Scripts\bootstrap-select.js" />
+    <Content Include="Scripts\bootstrap-switch.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\dataTables.editor.bootstrap.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery-ui.js" />
+    <Content Include="Scripts\jquery.dataTables.js" />
+    <Content Include="Scripts\jquery.fileupload.js" />
+    <Content Include="Scripts\jquery.iframe-transport.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -205,14 +233,27 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Account\_ChangePasswordPartial.cshtml" />
-    <Content Include="Views\Account\_RemoveAccountPartial.cshtml" />
-    <Content Include="Views\Account\_SetPasswordPartial.cshtml" />
-    <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
-    <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\Manage.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Repository\Index.cshtml" />
+    <Content Include="Views\RepositoryManagement\Index.cshtml" />
+    <Content Include="Views\AccountManagement\Index.cshtml" />
+    <Content Include="Views\AccountManagement\CreateUser.cshtml" />
+    <Content Include="Views\AccountManagement\UserManagement.cshtml" />
+    <Content Include="Views\FriendsManagement\Index.cshtml" />
+    <Content Include="Views\FriendsManagement\SearchFriend.cshtml" />
+    <Content Include="Views\FriendsManagement\_SearchResultPartial.cshtml" />
+    <Content Include="Views\FriendsManagement\FriendsList.cshtml" />
+    <Content Include="Views\FriendsManagement\Invitation.cshtml" />
+    <Content Include="Views\Repository\MyRepository.cshtml" />
+    <Content Include="Views\Repository\_CreateFolderPartial.cshtml" />
+    <Content Include="Views\Repository\_UploadFilePartial.cshtml" />
+    <Content Include="Views\Repository\_FolderListPartial.cshtml" />
+    <Content Include="Views\Repository\_FileListPartial.cshtml" />
+    <Content Include="Views\Repository\_CreateFolderModalPartial.cshtml" />
+    <Content Include="Views\Repository\_UploadFileModalPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

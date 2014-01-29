@@ -1,0 +1,99 @@
+﻿@model IList<FileSystemDAL.Models.Repository>
+
+@{
+    ViewBag.Title = "Invitation";
+}
+
+@Styles.Render("~/Content/jquery.dataTables")
+
+<h2>@ViewBag.Title</h2>
+<h4>List of invitation. Accept or deny the invitation to friends.</h4>
+<hr/>
+<table id="myDataTable" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Repository Name</th>
+            <th>Accept</th>
+            <th>Deny</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var repository in Model)
+        {
+            <tr>
+                <td>@repository.RepositoryId</td>
+                <td>@repository.RepositoryName</td>
+                <td>
+                    <button type="button" class="btn btn-success btn-sm" onclick="acceptInvitation(this)"><span class="glyphicon glyphicon-ok"></span> Accept Invitation</button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="denyInvitation(this)"><span class="glyphicon glyphicon-remove"></span> Deny Invitation</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@Scripts.Render("~/bundles/jquery.dataTables")
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#myDataTable').dataTable({
+            'bSortClasses': false,
+            "aoColumnDefs": [{ "bSortable": false, "aTargets": ["_all"] }],
+            "aoColumns": [{ "bSearchable": false }, { "bSearchable": true }, { "bSearchable": false }, { "bSearchable": false }],
+        });
+    });
+
+    var lockAccept = false;
+    var acceptInvitation = function (button) {
+        if (lockAccept == false) {
+            lockAccept = true;
+            $(button).off('click', acceptInvitation);
+            var rowIndex = $('#myDataTable').dataTable().fnGetPosition($(button).closest('tr')[0]);
+            var rowData = $('#myDataTable').dataTable().fnGetData(rowIndex);
+            $.ajax({
+                url: '@Url.Action("AcceptInvitation")',
+                type: "POST",
+                dataType: 'JSON',
+                data: {
+                    'repositoryId': rowData[0],
+                },
+                success: function () {
+                    $('#myDataTable').dataTable().fnDeleteRow(rowIndex);
+                    lockAccept = false;
+                },
+                error: function () {
+                    lockAccept = false;
+                }
+            });
+        }
+    };
+    
+    var lockDeny = false;
+    var denyInvitation = function (button) {
+        if (lockDeny == false) {
+            lockDeny = true;
+            $(button).off('click', denyInvitation);
+            var rowIndex = $('#myDataTable').dataTable().fnGetPosition($(button).closest('tr')[0]);
+            var rowData = $('#myDataTable').dataTable().fnGetData(rowIndex);
+            $.ajax({
+                url: '@Url.Action("DenyInvitation")',
+                type: "POST",
+                dataType: 'JSON',
+                data: {
+                    'repositoryId': rowData[0],
+                },
+                success: function () {
+                    $('#myDataTable').dataTable().fnDeleteRow(rowIndex);
+                    lockDeny = false;
+                },
+                error: function () {
+                    lockDeny = false;
+                }
+            });
+        }
+    };
+</script>
+

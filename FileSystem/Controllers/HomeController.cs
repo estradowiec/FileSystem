@@ -1,30 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-
+﻿
 namespace FileSystem.Controllers
 {
+    using System.Web.Mvc;
+
+    /// <summary>
+    /// The home controller.
+    /// </summary>
     public class HomeController : Controller
     {
+        /// <summary>
+        /// The index.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="ActionResult"/>.
+        /// </returns>
         public ActionResult Index()
         {
-            return View();
+            return this.View();
         }
 
+        /// <summary>
+        /// The about.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="ActionResult"/>.
+        /// </returns>
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "Application description page";
 
-            return View();
+            return this.View();
         }
 
+        /// <summary>
+        /// The contact.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="ActionResult"/>.
+        /// </returns>
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Contact page";
 
-            return View();
+            return this.View();
         }
     }
 }

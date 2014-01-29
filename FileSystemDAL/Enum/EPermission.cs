@@ -8,8 +8,6 @@
 
 namespace FileSystemDAL.Enum
 {
-    #region EPermission
-
     /// <summary>
     /// The e permission.
     /// </summary>
@@ -40,6 +38,4 @@ namespace FileSystemDAL.Enum
         /// </summary>
         UserLow = 4
     }
-
-    #endregion
 }

@@ -1,12 +1,23 @@
-﻿<!DOCTYPE html>
+﻿@using System.Globalization
+@using System.Security.Claims
+@using FileSystemDAL.Enum
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - File System Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
+    @Scripts.Render("~/bundles/jquery")
+    @{
+        var claimsIdentity = User.Identity as ClaimsIdentity;
+        Claim permission = null;
+        if (claimsIdentity != null)
+        {
+            permission = claimsIdentity.FindFirst("Permission");
+        }
+    }
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -22,6 +33,55 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    @{
+                        if (permission != null)
+                        {
+                            var permVal = int.Parse(permission.Value);
+
+                            if (permVal == (int)EPermission.Admin)
+                            {
+                                <li>@Html.ActionLink("Repositories", "Index", "RepositoryManagement")</li>
+                            }
+                            else if(permVal == (int)EPermission.RepositoryAdmin)
+                            {
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                        Accounts
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>@Html.ActionLink("Create User", "CreateUser", "AccountManagement")</li>
+                                        <li>@Html.ActionLink("Users Management", "UserManagement", "AccountManagement")</li>
+                                    </ul>
+                                </li>        
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                        Friends
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>@Html.ActionLink("Search Friend", "SearchFriend", "FriendsManagement")</li>
+                                        <li>@Html.ActionLink("Invitations to Friends", "Invitation", "FriendsManagement")</li>
+                                        <li>@Html.ActionLink("Friends List", "FriendsList", "FriendsManagement")</li>
+                                    </ul>
+                                </li>
+                            }
+                            
+                            if(permVal >= (int)EPermission.RepositoryAdmin)
+                            { 
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                        Repository
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>@Html.ActionLink("My Repository", "MyRepository", "Repository")</li>
+                                        <li>@Html.ActionLink("Friends Repository", "Index", "Repository")</li>
+                                    </ul>
+                                </li>
+                            }
+                        }
+                    }
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                 </ul>
@@ -37,7 +97,6 @@
         </footer>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 </body>

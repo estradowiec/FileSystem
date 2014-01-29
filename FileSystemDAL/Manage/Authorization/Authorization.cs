@@ -29,10 +29,13 @@ namespace FileSystemDAL.Manage
         /// <param name="repositoryName">
         /// The repository name.
         /// </param>
+        /// <param name="userName">
+        /// The user name.
+        /// </param>
         /// <returns>
         /// The <see cref="Task"/>.
         /// </returns>
-        public async Task<IdentityResult> ValidateRegistrationAsync(string email, string repositoryName)
+        public async Task<IdentityResult> ValidateRegistrationAsync(string email, string repositoryName, string userName)
         {
             var errors = new List<string>();
 
@@ -46,7 +49,73 @@ namespace FileSystemDAL.Manage
                 errors.Add("Repository name exist in system. Enter different name.");
             }
 
+            if (this.VerifyUserName(userName))
+            {
+                errors.Add("User name exist in system. Enter different name.");
+            }
+
             return errors.Any() ? IdentityResult.Failed(errors.ToArray()) : IdentityResult.Success;
+        }
+
+        /// <summary>
+        /// The change password.
+        /// </summary>
+        /// <param name="userId">
+        /// The user id.
+        /// </param>
+        /// <param name="oldPassword">
+        /// The old password.
+        /// </param>
+        /// <param name="newPassword">
+        /// The new password.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
+        public async Task<IdentityResult> ChangePassword(int userId, string oldPassword, string newPassword)
+        {
+            var errors = new List<string>();
+
+            var person = this.GetPerson(userId);
+            if (person == null)
+            {
+                errors.Add("Person Id is not exist in system.");
+                return IdentityResult.Failed(errors.ToArray());
+            }
+
+            string oldPasswordHash, newPasswordHash;
+
+            using (var md5 = MD5.Create())
+            {
+                oldPasswordHash = this.GetMd5Hash(md5, oldPassword);
+                newPasswordHash = this.GetMd5Hash(md5, newPassword);
+            }
+
+            if (!person.Password.Equals(oldPasswordHash))
+            {
+                errors.Add("The old password is not the same as the current.");
+            }
+
+            if (!oldPasswordHash.Equals(newPasswordHash))
+            {
+                errors.Add("Old password is the same as the new.");
+            }
+
+            if (errors.Any())
+            {
+                return IdentityResult.Failed(errors.ToArray());
+            }
+
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    person.Password = newPasswordHash;
+                    session.SaveOrUpdate(person);
+                    transaction.Commit();
+                    return IdentityResult.Success;
+                }
+            }
         }
 
         /// <summary>
@@ -83,15 +152,12 @@ namespace FileSystemDAL.Manage
         {
             using (var session = NHibernateHelper.OpenSession())
             {
-                using (session.BeginTransaction())
+                using (var md5 = MD5.Create())
                 {
-                    using (var md5 = MD5.Create())
-                    {
-                        string hashPassword = this.GetMd5Hash(md5, password);
-                        var exist =
-                            session.QueryOver<Person>().Where(x => x.Email == email).Where(x => x.Password == hashPassword).List().Any();
-                        return exist;
-                    }
+                    string hashPassword = this.GetMd5Hash(md5, password);
+                    var exist =
+                        session.QueryOver<Person>().Where(x => x.Email == email).Where(x => x.Password == hashPassword).List().Any();
+                    return exist;
                 }
             }
         }
@@ -109,11 +175,26 @@ namespace FileSystemDAL.Manage
         {
             using (var session = NHibernateHelper.OpenSession())
             {
-                using (session.BeginTransaction())
-                {
                     var exist = session.QueryOver<Repository>().Where(x => x.RepositoryName == repositoryName).List().Any();
                     return exist;
-                }
+            }
+        }
+
+        /// <summary>
+        /// The verify user name.
+        /// </summary>
+        /// <param name="userName">
+        /// The user name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        public bool VerifyUserName(string userName)
+        {
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                var exist = session.QueryOver<Person>().Where(x => x.PersonName == userName).List().Any();
+                return exist;
             }
         }
 
@@ -133,19 +214,63 @@ namespace FileSystemDAL.Manage
         {
             using (var session = NHibernateHelper.OpenSession())
             {
-                using (session.BeginTransaction())
+                using (var md5 = MD5.Create())
                 {
-                    using (var md5 = MD5.Create())
-                    {
-                        string hashPassword = this.GetMd5Hash(md5, password);
-                        var person =
-                            session.CreateCriteria(typeof(Person))
-                                .Add(Restrictions.Eq("Email", email))
-                                .Add(Restrictions.Eq("Password", hashPassword))
-                                .UniqueResult<Person>();
-                        return person;
-                    }
+                    string hashPassword = this.GetMd5Hash(md5, password);
+                    var person =
+                        session.CreateCriteria(typeof(Person))
+                            .Add(Restrictions.Eq("Email", email))
+                            .Add(Restrictions.Eq("Password", hashPassword))
+                            .UniqueResult<Person>();
+                    return person;
                 }
+            }
+        }
+
+        /// <summary>
+        /// The get repository.
+        /// </summary>
+        /// <param name="userId">
+        /// The user id.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Repository"/>.
+        /// </returns>
+        public Repository GetRepository(int userId)
+        {
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                var person =
+                        session.CreateCriteria(typeof(Person))
+                            .Add(Restrictions.Eq("PersonId", userId))
+                            .UniqueResult<Person>();
+                var repository =
+                    session.CreateCriteria(typeof(Repository))
+                        .Add(Restrictions.Eq("RepositoryId", person.RepositoryId))
+                        .UniqueResult<Repository>();
+
+                return repository;
+            }
+        }
+
+        /// <summary>
+        /// The get person.
+        /// </summary>
+        /// <param name="personId">
+        /// The person id.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Person"/>.
+        /// </returns>
+        public Person GetPerson(int personId)
+        {
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                var person =
+                    session.CreateCriteria(typeof(Person))
+                        .Add(Restrictions.Eq("PersonId", personId))
+                        .UniqueResult<Person>();
+                return person;
             }
         }
 
@@ -164,6 +289,9 @@ namespace FileSystemDAL.Manage
         /// <param name="repositoryName">
         /// The repository name.
         /// </param>
+        /// <returns>
+        /// The <see cref="Person"/>.
+        /// </returns>
         public Person RegisterPerson(string email, string personName, string password, string repositoryName)
         {
             var repository = new Repository

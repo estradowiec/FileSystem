@@ -14,7 +14,7 @@ namespace FileSystemDAL.Manage
     /// <summary>
     /// The admin.
     /// </summary>
-    public class Admin : IAdmin
+    public class Admin
     {
         /// <summary>
         /// The get list repository.
@@ -34,21 +34,37 @@ namespace FileSystemDAL.Manage
         /// <summary>
         /// The delete repository.
         /// </summary>
-        /// <param name="repository">
-        /// The repository.
+        /// <param name="repositoryId">
+        /// The repository id.
         /// </param>
-        public void DeleteRepository(Repository repository)
+        public void DeleteRepository(int repositoryId)
         {
             using (ISession session = NHibernateHelper.OpenSession())
             {
                 using (ITransaction transaction = session.BeginTransaction())
                 {
-                    var repositoryFromDb =
-                        session.CreateCriteria(typeof(Repository))
-                            .Add(Restrictions.Eq("RepositoryName", repository.RepositoryName))
-                            .UniqueResult<Repository>();
+                   var files = session.CreateCriteria(typeof(Files))
+                        .Add(Restrictions.Eq("RepositoryId", repositoryId))
+                        .List<Files>();
+                    foreach (var file in files)
+                    {
+                        session.Delete(string.Format("from {0} where FileID = {1}", typeof(SharedFile), file.FileId));
+                    }
 
-                    session.Delete(repositoryFromDb);
+                    var folders = session.CreateCriteria(typeof(Folder))
+                        .Add(Restrictions.Eq("RepositoryId", repositoryId))
+                        .List<Folder>();
+                    foreach (var folder in folders)
+                    {
+                        session.Delete(string.Format("from {0} where FolderID = {1}", typeof(SharedFolder), folder.FolderId));
+                    }
+
+                    session.Delete(string.Format("from {0} where RepositoryID = {1}", typeof(Files), repositoryId));
+                    session.Delete(string.Format("from {0} where RepositoryID = {1}", typeof(Folder), repositoryId));
+                    session.Delete(string.Format("from {0} where RepositoryID = {1}", typeof(Person), repositoryId));
+                    session.Delete(string.Format("from {0} where RelatingFromRepositoryID = {1} or RelatingToRepositoryID = {2}", typeof(Partnership), repositoryId, repositoryId));
+                    session.Delete(string.Format("from {0} where RepositoryID = {1}", typeof(Repository), repositoryId));
+
                     transaction.Commit();
                 }
             }
@@ -57,15 +73,19 @@ namespace FileSystemDAL.Manage
         /// <summary>
         /// The active repository.
         /// </summary>
-        /// <param name="repository">
-        /// The repository.
+        /// <param name="repositoryId">
+        /// The repository id.
         /// </param>
-        public void ActiveRepository(Repository repository)
+        public void ActiveRepository(int repositoryId)
         {
             using (ISession session = NHibernateHelper.OpenSession())
             {
                 using (ITransaction transaction = session.BeginTransaction())
                 {
+                    var repository =
+                        session.CreateCriteria(typeof(Repository))
+                            .Add(Restrictions.Eq("RepositoryId", repositoryId))
+                            .UniqueResult<Repository>();
                     repository.IsActive = true;
                     session.SaveOrUpdate(repository);
                     transaction.Commit();
@@ -76,15 +96,19 @@ namespace FileSystemDAL.Manage
         /// <summary>
         /// The deactive repository.
         /// </summary>
-        /// <param name="repository">
-        /// The repository.
+        /// <param name="repositoryId">
+        /// The repository id.
         /// </param>
-        public void DeactiveRepository(Repository repository)
+        public void DeactiveRepository(int repositoryId)
         {
             using (ISession session = NHibernateHelper.OpenSession())
             {
                 using (ITransaction transaction = session.BeginTransaction())
                 {
+                    var repository =
+                        session.CreateCriteria(typeof(Repository))
+                            .Add(Restrictions.Eq("RepositoryId", repositoryId))
+                            .UniqueResult<Repository>();
                     repository.IsActive = false;
                     session.SaveOrUpdate(repository);
                     transaction.Commit();

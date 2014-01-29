@@ -59,7 +59,7 @@ namespace FileSystemDAL.Models
         /// <summary>
         /// Gets or sets the folder id.
         /// </summary>
-        public virtual int FolderId { get; set; }
+        public virtual int? FolderId { get; set; }
 
         /// <summary>
         /// The equals.

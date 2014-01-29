@@ -1,0 +1,61 @@
+﻿@using FileSystem.Models
+@model FileSystem.Models.RepositoryViewModel
+
+@{
+    ViewBag.Title = "My Repository";
+}
+
+@Styles.Render("~/Content/jquery.dataTables")
+
+<h2>@ViewBag.Title</h2>
+<h4>Your repository. You can browse, download and upload files.</h4>
+<hr/>
+<b>Path:</b> @Model.RepositoryName:\\ 
+@foreach (var folder in Model.PathFolderList)
+{
+    @:@folder.FolderName\
+}
+
+<hr/>
+<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th style="line-height: 30px;">Folders <button type="button" class="btn pull-right btn-default btn-sm" data-toggle="modal" data-target="#createFolder">
+                                                       <span class="glyphicon glyphicon-folder-open"></span> Create Folder
+                                                   </button>
+            </th>
+            <th style="line-height: 30px;">Files <button type="button" class="btn pull-right btn-default btn-sm" data-toggle="modal" data-target="#uploadFile">
+                                                     <span class="glyphicon glyphicon-folder-open"></span> Upload File
+                                                 </button></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                @Html.Partial("_FolderListPartial", Model.Folders)
+            </td>
+            <td>
+                @Html.Partial("_FileListPartial", Model.Fileses)
+            </td>
+        </tr>
+    </tbody>
+</table>
+@if (Model.PathFolderList.Any())
+{
+    @Html.Partial("_CreateFolderModalPartial", new CreateFolderViewModel { FolderId = Model.PathFolderList.Last().FolderId })
+    @Html.Partial("_UploadFileModalPartial", new UploadFileViewModel { FolderId = Model.PathFolderList.Last().FolderId })
+}
+else
+{
+    @Html.Partial("_CreateFolderModalPartial", new CreateFolderViewModel { FolderId = null })
+    @Html.Partial("_UploadFileModalPartial", new UploadFileViewModel { FolderId = null })
+}
+
+
+
+
+@Scripts.Render("~/bundles/jquery.dataTables")
+
+<script type="text/javascript">
+
+</script>

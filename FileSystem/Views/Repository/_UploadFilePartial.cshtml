@@ -1,0 +1,74 @@
+﻿@using FileSystem.Models
+@model UploadFileViewModel
+           
+@Styles.Render("~/Content/jquery.fileupload")
+           
+<form class="form-horizontal" id="formFolder" role="form">
+    @Html.AntiForgeryToken()
+    <h4>Upload file to current path</h4>
+    <hr />
+    @Html.ValidationSummary()
+    <div class="form-group">
+        @Html.LabelFor(m => m.File, new { @class = "col-md-4 control-label" })
+        <div class="col-md-8">
+            @Html.TextBoxFor(m => m.File, new { @type = "file", @multiple = "multiple" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.UserPermission, new { @class = "col-md-4 control-label" })
+        <div class="col-md-8">
+            @Html.DropDownListFor(m => m.UserPermission, new SelectList(Enum.GetValues(typeof(EUserPermission))), new { @class = "selectpicker" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-4 col-md-8">
+            <input type="button" id="buttonUpload" class="btn btn-success" value="Upload All" />
+        </div>
+    </div>
+    <div class="hide" id="fileListHolder">
+    </div>
+</form>
+
+@Scripts.Render("~/bundles/jquery.fileupload")
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#File').fileupload({
+            dataType: "json",
+            url: '@Url.Action("UploadFile")',
+            limitConcurrentUploads: 1,
+            sequentialUploads: true,
+            progressInterval: 100,
+            //maxChunkSize: 2097152,
+            maxChunkSize: 100000,
+            async: false,
+            add: function (e, data) {
+                $('#fileListHolder').removeClass('hide');
+                data.context = $('<div/>').text(data.files[0].name).appendTo('#fileListHolder');
+                $('</div><div class="progress progress-striped active">' +
+                    '<div class="progress-bar" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:0%">' +
+                    '<span class="sr-only">0% Complete</span>' +
+                    '</div></div>').appendTo(data.context);
+                $('#buttonUpload').click(function () {
+                    data.submit();
+                });
+            },
+            submit: function (e, data) {
+                data.formData = { example: data.files[0].name};
+                var a = "adsd";
+            },
+            done: function (e, data) {
+                data.context.text(data.files[0].name + '... Completed');
+                $('</div><div class="progress progress-striped active">' +
+                    '<div class="progress-bar" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:100%">' +
+                    '<span class="sr-only">0% Complete</span>' +
+                    '</div></div>').appendTo(data.context);
+            },
+            progress: function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                data.context.find('.progress-bar').css('width', progress + '%');
+            }
+        });
+    });
+
+</script>

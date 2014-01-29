@@ -27,7 +27,6 @@ namespace FileSystemDAL.Manage
         public PersonRepository(Repository repository, EPermission permission)
         {
             this.MyRepository = new RepositoryManager(repository, permission);
-            this.PartnershipManager = new PartnershipManager(repository);
         }
 
         /// <summary>
@@ -36,23 +35,40 @@ namespace FileSystemDAL.Manage
         public RepositoryManager MyRepository { get; private set; }
 
         /// <summary>
-        /// Gets the partnership manager.
+        /// The create folder.
         /// </summary>
-        public PartnershipManager PartnershipManager { get; private set; }
-
-        /// <summary>
-        /// The friends repository.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="List"/>.
-        /// </returns>
-        public List<Repository> FriendsRepository()
+        /// <param name="parrentFolderId">
+        /// The parrent folder id.
+        /// </param>
+        /// <param name="folderName">
+        /// The folder name.
+        /// </param>
+        /// <param name="permission">
+        /// The permission.
+        /// </param>
+        public void CreateFolder(int? folderId, string folderName, EPermission permission)
         {
-            return PartnershipManager.GetFriends();
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                using (ITransaction transaction = session.BeginTransaction())
+                {
+                    var folder = new Folder
+                                     {
+                                         ParrentId = folderId,
+                                         FolderName = folderName,
+                                         Permission = permission,
+                                         RepositoryId = this.MyRepository.Repository.RepositoryId,
+                                         DateAttach = DateTime.Now
+                                     };
+
+                    session.Save(folder);
+                    transaction.Commit();
+                }
+            }
         }
 
         /// <summary>
-        /// The create file storage.
+        /// The init file.
         /// </summary>
         /// <param name="fileName">
         /// The file name.
@@ -67,9 +83,9 @@ namespace FileSystemDAL.Manage
         /// The permission.
         /// </param>
         /// <returns>
-        /// The <see cref="Files"/>.
+        /// The <see cref="int"/>.
         /// </returns>
-        public Files InitFile(string fileName, decimal fileSize, int folderId, EPermission permission)
+        public int InitFile(string fileName, decimal fileSize, int? folderId, EPermission permission)
         {
             var files = new Files
                             {
@@ -86,9 +102,9 @@ namespace FileSystemDAL.Manage
             {
                 using (var transaction = session.BeginTransaction())
                 {
-                    files.FileId = (int)session.Save(files);
+                    var fileId = (int)session.Save(files);
                     transaction.Commit();
-                    return files;
+                    return fileId;
                 }
             }
         }

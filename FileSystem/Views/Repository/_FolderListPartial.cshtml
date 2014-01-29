@@ -1,0 +1,34 @@
+﻿@model IList<FileSystemDAL.Models.Folder>
+
+<table id="folderListTable" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Folder Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var folder in Model)
+        {
+            <tr>
+                <td>
+                    @folder.FolderId
+                </td>
+                <td>
+                    @folder.FolderName
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#folderListTable').dataTable({
+            'bSortClasses': false,
+            "aoColumnDefs": [{ "bSortable": false, "aTargets": ["_all"] }],
+            "aoColumns": [{ "bSearchable": false }, { "bSearchable": true }],
+            "sDom": 'frt'
+        });
+    });
+</script>
