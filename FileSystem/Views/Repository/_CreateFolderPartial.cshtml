@@ -1,6 +1,7 @@
-﻿
-@using FileSystem.Models
+﻿@using FileSystem.Models
 @model CreateFolderViewModel
+           
+@Styles.Render("~/Content/bootstrap-select")
 
 <form class="form-horizontal" id="formFolder" role="form">
     @Html.AntiForgeryToken()
@@ -16,7 +17,7 @@
     <div class="form-group">
         @Html.LabelFor(m => m.UserPermission, new { @class = "col-md-4 control-label" })
         <div class="col-md-8">
-            @Html.DropDownListFor(m => m.UserPermission, new SelectList(Enum.GetValues(typeof(EUserPermission))), new { @class = "selectpicker" })
+            @Html.DropDownListFor(m => m.UserPermission, new SelectList(Enum.GetValues(typeof(EUserPermission))), new { @id = "permissionFolder", @class = "selectpicker" })
         </div>
     </div>
     <div class="form-group">
@@ -26,8 +27,6 @@
     </div>
 </form>
 
-
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/bootstrap-select")
@@ -35,6 +34,6 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        //$('.selectpicker').selectpicker();
+        $('#permissionFolder').selectpicker();
     });
 </script>

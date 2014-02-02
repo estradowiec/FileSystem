@@ -13,7 +13,6 @@ namespace FileSystem
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
-
             ////*******SCRIPTS***********
             
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
@@ -43,6 +42,9 @@ namespace FileSystem
                         "~/Scripts/jquery-ui.js",
                        "~/Scripts/jquery.fileupload.js",
                        "~/Scripts/jquery.iframe-transport.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/spark-md5").Include(
+                        "~/Scripts/spark-md5.js"));
 
 
             ////******STYLES************

@@ -36,6 +36,19 @@
     <property name="RepositoryId" column="RepositoryID"/>
     <property name="FolderId" column="FolderID"/>
   </class>
+  
+  <class name="FileUpload">
+    <id name="FileId" column="FileID">
+      <generator class="identity"/>
+    </id>
+    <property name="FileNames" />
+    <property name="FileSize" />
+    <property name="FileExtension" />
+    <property name="DateAttach"/>
+    <property name="Permission"/>
+    <property name="RepositoryId"/>
+    <property name="FolderId"/>
+  </class>
 
   <class name="Folder">
     <id name="FolderId" column="FolderID">

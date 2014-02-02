@@ -1,6 +1,6 @@
 ﻿#region Copyright
 //-----------------------------------------------------------------------------
-// <copyright file="Files.cs" company="tnocon">
+// <copyright file="FilesUpload.cs" company="tnocon">
 //     Copyright (c) Tomasz Nocoń All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------------
@@ -14,7 +14,7 @@ namespace FileSystemDAL.Models
     /// <summary>
     /// The file.
     /// </summary>
-    public class Files : IEquatable<Files>
+    public class FileUpload
     {
         /// <summary>
         /// Gets or sets the file id.
@@ -55,27 +55,5 @@ namespace FileSystemDAL.Models
         /// Gets or sets the folder id.
         /// </summary>
         public virtual int? FolderId { get; set; }
-
-        /// <summary>
-        /// The equals.
-        /// </summary>
-        /// <param name="other">
-        /// The other.
-        /// </param>
-        /// <returns>
-        /// The <see cref="bool"/>.
-        /// </returns>
-        public virtual bool Equals(Files other)
-        {
-            if (other == null || this.GetType() != other.GetType())
-            {
-                return false;
-            }
-
-            return this.FileExtension.Equals(other.FileExtension)
-                && this.FileId.Equals(other.FileId) && this.FileNames.Equals(other.FileNames)
-                && this.FileSize.Equals(other.FileSize) && this.FolderId.Equals(other.FolderId)
-                && this.RepositoryId.Equals(other.RepositoryId);
-        }
     }
 }

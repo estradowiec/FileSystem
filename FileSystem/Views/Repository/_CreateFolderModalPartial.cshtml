@@ -24,7 +24,7 @@
     var createFolder = function (button) {
         if (lockCreate == false) {
             lockCreate = true;
-            var modelData = $('#formFolder').serialize();
+            var modelData = $('#formFolder').serialize() + "&FolderId=" + '@Model.FolderId';
             $(button).off('click', createFolder);
             $.ajax({
                 url: '@Url.Action("_CreateFolderPartial")',
@@ -43,5 +43,4 @@
             });
         }
     };
-
 </script>

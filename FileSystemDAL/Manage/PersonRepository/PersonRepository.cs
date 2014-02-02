@@ -2,7 +2,6 @@
 namespace FileSystemDAL.Manage
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using FileSystemDAL.Enum;
     using FileSystemDAL.Helper;
@@ -73,6 +72,9 @@ namespace FileSystemDAL.Manage
         /// <param name="fileName">
         /// The file name.
         /// </param>
+        /// <param name="fileHash">
+        /// The file hash.
+        /// </param>
         /// <param name="fileSize">
         /// The file size.
         /// </param>
@@ -87,7 +89,7 @@ namespace FileSystemDAL.Manage
         /// </returns>
         public int InitFile(string fileName, decimal fileSize, int? folderId, EPermission permission)
         {
-            var files = new Files
+            var fileUpload = new FileUpload
                             {
                                 DateAttach = DateTime.Now,
                                 FileExtension = Path.GetExtension(fileName),
@@ -102,7 +104,7 @@ namespace FileSystemDAL.Manage
             {
                 using (var transaction = session.BeginTransaction())
                 {
-                    var fileId = (int)session.Save(files);
+                    var fileId = (int)session.Save(fileUpload);
                     transaction.Commit();
                     return fileId;
                 }
@@ -123,13 +125,13 @@ namespace FileSystemDAL.Manage
         /// </param>
         public void UploadFile(string path, int fileId, Stream inputStream)
         {
-            Files files;
+            FileUpload file;
             using (var session = NHibernateHelper.OpenSession())
             {
-                files = session.CreateCriteria(typeof(Files)).Add(Restrictions.Eq("FileId", fileId)).UniqueResult<Files>();
+                file = session.CreateCriteria(typeof(FileUpload)).Add(Restrictions.Eq("FileId", fileId)).UniqueResult<FileUpload>();
             }
 
-            var filePath = GetFilePath(path, files);
+            var filePath = GetFilePath(path, file.FileId, file.FileNames);
             using (var outpuStream = GetFileStream(filePath))
             {
                 var buffer = new byte[32768];
@@ -138,6 +140,55 @@ namespace FileSystemDAL.Manage
                 while ((read = inputStream.Read(buffer, 0, buffer.Length)) > 0)
                 {
                     outpuStream.Write(buffer, 0, read);
+                }
+            }
+        }
+
+        /// <summary>
+        /// The finish upload file.
+        /// </summary>
+        /// <param name="fileUploadId">
+        /// The file upload id.
+        /// </param>
+        /// <param name="filePath">
+        /// The file path.
+        /// </param>
+        /// <returns>
+        /// The <see cref="int?"/>.
+        /// </returns>
+        public int? FinishUploadFile(int fileUploadId, string filePath)
+        {
+            FileUpload fileUpload;
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                fileUpload = session.CreateCriteria(typeof(FileUpload)).Add(Restrictions.Eq("FileId", fileUploadId)).UniqueResult<FileUpload>();
+            }
+
+            var fileInfo = new FileInfo(GetFilePath(filePath, fileUpload.FileId, fileUpload.FileNames));
+
+            if (!fileUpload.FileSize.Equals(fileInfo.Length))
+            {
+                return null;
+            }
+
+            var file = new Files
+            {
+                DateAttach = DateTime.Now,
+                FileExtension = fileUpload.FileExtension,
+                FileNames = fileUpload.FileNames,
+                FolderId = fileUpload.FolderId,
+                FileSize = fileUpload.FileSize,
+                Permission = fileUpload.Permission,
+                RepositoryId = fileUpload.RepositoryId
+            };
+
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    var fileId = (int)session.Save(file);
+                    transaction.Commit();
+                    return fileId;
                 }
             }
         }
@@ -162,7 +213,7 @@ namespace FileSystemDAL.Manage
                 files = session.CreateCriteria(typeof(Files)).Add(Restrictions.Eq("FileId", fileId)).UniqueResult<Files>();
             }
 
-            var filePath = GetFilePath(path, files);
+            var filePath = GetFilePath(path, files.FileId, files.FileNames);
             return File.Exists(filePath) ? File.Open(filePath, FileMode.Open) : Stream.Null;
         }
 
@@ -196,7 +247,7 @@ namespace FileSystemDAL.Manage
                 }
             }
 
-            var filePath = GetFilePath(path, files);
+            var filePath = GetFilePath(path, files.FileId, files.FileNames);
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
@@ -305,15 +356,18 @@ namespace FileSystemDAL.Manage
         /// <param name="path">
         /// The path.
         /// </param>
-        /// <param name="files">
-        /// The files.
+        /// <param name="fileId">
+        /// The file id.
+        /// </param>
+        /// <param name="fileNames">
+        /// The file names.
         /// </param>
         /// <returns>
         /// The <see cref="string"/>.
         /// </returns>
-        private static string GetFilePath(string path, Files files)
+        private static string GetFilePath(string path, int fileId, string fileNames)
         {
-            var fileName = string.Format("{0}-{1}", files.FileId, files.FileNames);
+            var fileName = string.Format("{0}-{1}", fileId, fileNames);
             return path + fileName;
         }
     }

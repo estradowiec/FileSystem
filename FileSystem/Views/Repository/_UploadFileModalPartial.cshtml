@@ -20,28 +20,7 @@
 </div>
 
 <script type="text/javascript">
-    var lockCreate = false;
-    var createFolder = function (button) {
-        if (lockCreate == false) {
-            lockCreate = true;
-            var modelData = $('#formFolder').serialize();
-            $(button).off('click', createFolder);
-            $.ajax({
-                url: '@Url.Action("_CreateFolderPartial")',
-                type: "POST",
-                dataType: 'JSON',
-                data: modelData,
-                success: function () {
-                    $('#createFolder').modal('hide');
-                    location.reload();
-                    lockCreate = false;
-                },
-                error: function (data) {
-                    $('#modalBody').html(data.responseText);
-                    lockCreate = false;
-                }
-            });
-        }
-    };
-
+    $('#uploadFile').on('hidden.bs.modal', function(e) {
+        location.reload();
+    });
 </script>

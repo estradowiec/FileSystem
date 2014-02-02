@@ -112,22 +112,58 @@ namespace FileSystem.Controllers
         public ActionResult UploadFile()
         {
             var file = Request.Files[0];
-            var asd = Request.Form.Get("example");
-            int fileId = 0;
-            if (Request.Headers.Get("Content-Range") != null)
+            var fileUploadId = int.Parse(Request.Form.Get("fileUploadId"));
+
+            if (file == null)
             {
-                string pattern = @"bytes (\d+)-(\d+)/(\d+)";
-                var ranges = Request.Headers.Get("Content-Range");
-                string rangeStart = Regex.Replace(ranges, pattern, "$1");
-                if (int.Parse(rangeStart).Equals(0))
-                {
-                    //fileId = this.personRepository.InitFile(file.FileName, file.InputStream.Length, null, EPermission.UserLow);
-                }
+                return this.Json(new { Success = false });
             }
 
-            //this.personRepository.UploadFile(ConfigurationManager.AppSettings["UploadPath"], fileId, file.InputStream);
-
+            this.personRepository.UploadFile(ConfigurationManager.AppSettings["UploadPath"], fileUploadId, file.InputStream);
             return this.Json(new { Success = true });
+        }
+
+        /// <summary>
+        /// The init upload.
+        /// </summary>
+        /// <param name="fileName">
+        /// The file name.
+        /// </param>
+        /// <param name="fileSize">
+        /// The file size.
+        /// </param>
+        /// <param name="folderId">
+        /// The folder id.
+        /// </param>
+        /// <param name="userPermission">
+        /// The user permission.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ActionResult"/>.
+        /// </returns>
+        [HttpPost]
+        public ActionResult InitUpload(string fileName, decimal fileSize, int? folderId, EUserPermission userPermission)
+        {
+            var fileUploadId = this.personRepository.InitFile(fileName, fileSize, folderId, (EPermission)(int)userPermission);
+
+            return this.Json(new { FileUploadId = fileUploadId });
+        }
+
+        /// <summary>
+        /// The finish upload file.
+        /// </summary>
+        /// <param name="fileUploadId">
+        /// The file upload id.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ActionResult"/>.
+        /// </returns>
+        [HttpPost]
+        public ActionResult FinishUploadFile(int fileUploadId)
+        {
+            this.personRepository.FinishUploadFile(fileUploadId, ConfigurationManager.AppSettings["UploadPath"]);
+
+            return this.Json(new { Success = false });
         }
 
         /// <summary>

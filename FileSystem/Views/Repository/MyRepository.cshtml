@@ -13,7 +13,10 @@
 <b>Path:</b> @Model.RepositoryName:\\ 
 @foreach (var folder in Model.PathFolderList)
 {
-    @:@folder.FolderName\
+    if (folder != null)
+    {
+        @:@folder.FolderName\
+    }
 }
 
 <hr/>
@@ -51,11 +54,4 @@ else
     @Html.Partial("_UploadFileModalPartial", new UploadFileViewModel { FolderId = null })
 }
 
-
-
-
 @Scripts.Render("~/bundles/jquery.dataTables")
-
-<script type="text/javascript">
-
-</script>

@@ -190,14 +190,17 @@ namespace FileSystemDAL.Manage
             using (var session = NHibernateHelper.OpenSession())
             {
                 var pathFolderList = new List<Folder>();
+                
                 var currentFolder =
                     session.CreateCriteria<Folder>().Add(Restrictions.Eq("FolderId", folderId)).UniqueResult<Folder>();
+                pathFolderList.Add(currentFolder);
                 while (currentFolder.ParrentId.HasValue)
                 {
-                    pathFolderList.Add(currentFolder);
                     currentFolder = session.CreateCriteria<Folder>().Add(Restrictions.Eq("FolderId", currentFolder.ParrentId)).UniqueResult<Folder>();
+                    pathFolderList.Add(currentFolder);
                 }
 
+                pathFolderList.Add(null);
                 return Enumerable.Reverse(pathFolderList).ToList();
             }
         }
