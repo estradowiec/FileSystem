@@ -188,6 +188,7 @@ namespace FileSystemDAL.Manage
                 {
                     var fileId = (int)session.Save(file);
                     transaction.Commit();
+                    File.Move(fileInfo.FullName, string.Format("{0}\\{1}-{2}", fileInfo.DirectoryName, fileId, file.FileNames));
                     return fileId;
                 }
             }
@@ -205,7 +206,7 @@ namespace FileSystemDAL.Manage
         /// <returns>
         /// The <see cref="Stream"/>.
         /// </returns>
-        public Stream DownloadFile(string path, int fileId)
+        public FileStream DownloadFile(string path, int fileId)
         {
             Files files;
             using (var session = NHibernateHelper.OpenSession())
@@ -214,7 +215,8 @@ namespace FileSystemDAL.Manage
             }
 
             var filePath = GetFilePath(path, files.FileId, files.FileNames);
-            return File.Exists(filePath) ? File.Open(filePath, FileMode.Open) : Stream.Null;
+
+            return File.Exists(filePath) ? File.Open(filePath, FileMode.Open) : Stream.Null as FileStream;
         }
 
         /// <summary>
@@ -229,23 +231,133 @@ namespace FileSystemDAL.Manage
         public void DeleteFile(string path, int fileId)
         {
             Files files;
-            using (var session = NHibernateHelper.OpenSession())
-            {
-                    files =
-                        session.CreateCriteria(typeof(Files))
-                            .Add(Restrictions.Eq("FileId", fileId))
-                            .UniqueResult<Files>();
-                    //session.CreateSQLQuery(string.Format("Delete from Files where FileID ={0}", files.FileId));
-            }
 
             using (var session = NHibernateHelper.OpenSession())
             {
                 using (ITransaction transaction = session.BeginTransaction())
                 {
+                    var sharedFileList =
+                        session.CreateCriteria(typeof(SharedFile))
+                            .Add(Restrictions.Eq("FileId", fileId))
+                            .List<SharedFile>();
+
+                    foreach (var sharedFile in sharedFileList)
+                    {
+                        session.Delete(sharedFile);
+                    }
+
+                    transaction.Commit();
+
+                    files =
+                        session.CreateCriteria(typeof(Files))
+                            .Add(Restrictions.Eq("FileId", fileId))
+                            .UniqueResult<Files>();
+
                     session.Delete(files);
                     transaction.Commit();
                 }
             }
+
+            var filePath = GetFilePath(path, files.FileId, files.FileNames);
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+        }
+
+        /// <summary>
+        /// The delete folder.
+        /// </summary>
+        /// <param name="folderId">
+        /// The folder id.
+        /// </param>
+        /// <param name="path">
+        /// The path.
+        /// </param>
+        public void DeleteFolder(int folderId, string path)
+        {
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                using (ITransaction transaction = session.BeginTransaction())
+                {
+                    this.DeleteFolder(folderId, path, session);
+                    transaction.Commit();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The delete folder.
+        /// </summary>
+        /// <param name="folderId">
+        /// The folder id.
+        /// </param>
+        /// <param name="path">
+        /// The path.
+        /// </param>
+        /// <param name="session">
+        /// The session.
+        /// </param>
+        private void DeleteFolder(int folderId, string path, ISession session)
+        {
+            var fileList =
+                session.CreateCriteria<Files>().Add(Restrictions.Eq("FolderId", folderId)).List<Files>();
+
+            foreach (var file in fileList)
+            {
+                this.DeleteFile(path, file.FileId, session);
+            }
+
+            var folderList = session.CreateCriteria<Folder>().Add(Restrictions.Eq("ParrentId", folderId)).List<Folder>();
+
+            foreach (var folderItem in folderList)
+            {
+                this.DeleteFolder(folderItem.FolderId, path, session);
+            }
+
+            var sharedFolderList =
+                session.CreateCriteria(typeof(SharedFolder))
+                    .Add(Restrictions.Eq("FolderId", folderId))
+                    .List<SharedFolder>();
+
+            foreach (var sharedFolder in sharedFolderList)
+            {
+                session.Delete(sharedFolder);
+            }
+
+            var folder = session.CreateCriteria<Folder>().Add(Restrictions.Eq("FolderId", folderId)).UniqueResult<Folder>();
+            session.Delete(folder);
+        }
+
+        /// <summary>
+        /// The delete file.
+        /// </summary>
+        /// <param name="path">
+        /// The path.
+        /// </param>
+        /// <param name="fileId">
+        /// The file id.
+        /// </param>
+        /// <param name="session">
+        /// The session.
+        /// </param>
+        private void DeleteFile(string path, int fileId, ISession session)
+        {
+            var sharedFileList =
+                session.CreateCriteria(typeof(SharedFile))
+                    .Add(Restrictions.Eq("FileId", fileId))
+                    .List<SharedFile>();
+
+            foreach (var sharedFile in sharedFileList)
+            {
+                session.Delete(sharedFile);
+            }
+
+            var files = session.CreateCriteria(typeof(Files))
+                .Add(Restrictions.Eq("FileId", fileId))
+                .UniqueResult<Files>();
+
+            session.Delete(files);
 
             var filePath = GetFilePath(path, files.FileId, files.FileNames);
             if (File.Exists(filePath))

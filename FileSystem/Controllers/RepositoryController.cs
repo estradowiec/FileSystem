@@ -2,10 +2,8 @@
 namespace FileSystem.Controllers
 {
     using System.Configuration;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    using System.Threading;
-    using System.Web.Helpers;
+    using System.Globalization;
+    using System.IO;
     using System.Web.Mvc;
     using System.Web.Routing;
 
@@ -111,6 +109,17 @@ namespace FileSystem.Controllers
         [HttpPost]
         public ActionResult UploadFile()
         {
+            if (!this.User.Identity.IsAuthenticated)
+            {
+                return this.RedirectToAction("Login", "Account");
+            }
+
+            var user = this.authorization.GetPerson(int.Parse(this.User.Identity.GetUserId()));
+            if ((int)user.Permission == 0)
+            {
+                return this.RedirectToAction("Index", "Home");
+            }
+
             var file = Request.Files[0];
             var fileUploadId = int.Parse(Request.Form.Get("fileUploadId"));
 
@@ -144,6 +153,17 @@ namespace FileSystem.Controllers
         [HttpPost]
         public ActionResult InitUpload(string fileName, decimal fileSize, int? folderId, EUserPermission userPermission)
         {
+            if (!this.User.Identity.IsAuthenticated)
+            {
+                return this.RedirectToAction("Login", "Account");
+            }
+
+            var user = this.authorization.GetPerson(int.Parse(this.User.Identity.GetUserId()));
+            if ((int)user.Permission == 0)
+            {
+                return this.RedirectToAction("Index", "Home");
+            }
+
             var fileUploadId = this.personRepository.InitFile(fileName, fileSize, folderId, (EPermission)(int)userPermission);
 
             return this.Json(new { FileUploadId = fileUploadId });
@@ -161,9 +181,118 @@ namespace FileSystem.Controllers
         [HttpPost]
         public ActionResult FinishUploadFile(int fileUploadId)
         {
+            if (!this.User.Identity.IsAuthenticated)
+            {
+                return this.RedirectToAction("Login", "Account");
+            }
+
+            var user = this.authorization.GetPerson(int.Parse(this.User.Identity.GetUserId()));
+            if ((int)user.Permission == 0)
+            {
+                return this.RedirectToAction("Index", "Home");
+            }
+
             this.personRepository.FinishUploadFile(fileUploadId, ConfigurationManager.AppSettings["UploadPath"]);
 
-            return this.Json(new { Success = false });
+            return this.Json(new { Success = true });
+        }
+
+        /// <summary>
+        /// The delete file.
+        /// </summary>
+        /// <param name="fileId">
+        /// The file id.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ActionResult"/>.
+        /// </returns>
+        [HttpPost]
+        public ActionResult DeleteFile(int fileId)
+        {
+            if (!this.User.Identity.IsAuthenticated)
+            {
+                return this.RedirectToAction("Login", "Account");
+            }
+
+            var user = this.authorization.GetPerson(int.Parse(this.User.Identity.GetUserId()));
+            if ((int)user.Permission == 0)
+            {
+                return this.RedirectToAction("Index", "Home");
+            }
+
+            this.personRepository.DeleteFile(ConfigurationManager.AppSettings["UploadPath"], fileId);
+
+            return this.Json(new { Success = true });
+        }
+
+        /// <summary>
+        /// The download file.
+        /// </summary>
+        /// <param name="fileId">
+        /// The file id.
+        /// </param>
+        /// <returns>
+        /// The <see cref="FileResult"/>.
+        /// </returns>
+        public ActionResult DownloadFile(int fileId)
+        {
+            if (!this.User.Identity.IsAuthenticated)
+            {
+                return this.RedirectToAction("Login", "Account");
+            }
+
+            var user = this.authorization.GetPerson(int.Parse(this.User.Identity.GetUserId()));
+            if ((int)user.Permission == 0)
+            {
+                return this.RedirectToAction("Index", "Home");
+            }
+
+            const int BlockSize = 1024 * 512;
+
+            var fileStream = this.personRepository.DownloadFile(ConfigurationManager.AppSettings["UploadPath"], fileId);
+
+            var buffer = new byte[BlockSize];
+            int bytesRead;
+            Response.Clear();
+            Response.ContentType = "application/octet-stream";
+            Response.AddHeader("Content-Disposition", "attachment; filename=\"" + Path.GetFileName(fileStream.Name) + "\"");
+            Response.AddHeader("Content-Length", fileStream.Length.ToString(CultureInfo.InvariantCulture));
+            while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                Response.OutputStream.Write(buffer, 0, bytesRead);
+                Response.Flush();
+            }
+
+            fileStream.Close();
+            return this.Json(new { Success = true });
+        }
+
+        /// <summary>
+        /// The delete folder.
+        /// </summary>
+        /// <param name="folderId">
+        /// The folder id.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ActionResult"/>.
+        /// </returns>
+        [HttpPost]
+        public ActionResult DeleteFolder(int folderId)
+        {
+            if (!this.User.Identity.IsAuthenticated)
+            {
+                return this.RedirectToAction("Login", "Account");
+            }
+
+            var user = this.authorization.GetPerson(int.Parse(this.User.Identity.GetUserId()));
+            if ((int)user.Permission == 0)
+            {
+                return this.RedirectToAction("Index", "Home");
+            }
+
+            this.personRepository.DeleteFolder(folderId, ConfigurationManager.AppSettings["UploadPath"]);
+
+            return this.Json(new { Success = true });
         }
 
         /// <summary>

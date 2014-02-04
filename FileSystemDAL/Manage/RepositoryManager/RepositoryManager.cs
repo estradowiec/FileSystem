@@ -1,6 +1,4 @@
-﻿
-
-namespace FileSystemDAL.Manage
+﻿namespace FileSystemDAL.Manage
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -74,8 +72,6 @@ namespace FileSystemDAL.Manage
 
             return errors.Any() ? IdentityResult.Failed(errors.ToArray()) : IdentityResult.Success;
         }
-
-
 
         /// <summary>
         /// The get files.

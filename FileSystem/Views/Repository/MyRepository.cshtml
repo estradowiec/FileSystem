@@ -10,12 +10,13 @@
 <h2>@ViewBag.Title</h2>
 <h4>Your repository. You can browse, download and upload files.</h4>
 <hr/>
-<b>Path:</b> @Model.RepositoryName:\\ 
+<b>Path:</b> <a href="@Url.Action("MyRepository", "Repository", null)">@Model.RepositoryName</a>:\\ 
 @foreach (var folder in Model.PathFolderList)
 {
     if (folder != null)
     {
-        @:@folder.FolderName\
+        
+        @:<a href="@Url.Action("MyRepository", "Repository", new{folderId = folder.FolderId})">@folder.FolderName</a>\
     }
 }
 

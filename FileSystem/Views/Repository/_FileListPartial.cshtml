@@ -32,10 +32,10 @@
                     @file.DateAttach
                 </td>
                 <td>
-                    <button type="button" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove"></span> Delete</button>
+                    <button type="button" onclick="deleteFile(this)" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove"></span> Delete</button>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-cloud-download"></span> Download</button>
+                    <button type="button" onclick="downloadFile(@file.FileId)" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-cloud-download"></span> Download</button>
                 </td>
             </tr>
         }
@@ -48,7 +48,35 @@
             'bSortClasses': false,
             "aoColumnDefs": [{ "bSortable": false, "aTargets": ["_all"] }],
             "aoColumns": [{ "bSearchable": false }, { "bSearchable": true }, { "bSearchable": false }, { "bSearchable": false }, { "bSearchable": false }, { "bSearchable": false }, { "bSearchable": false }],
-            "sDom": 'frt'
         });
     });
+
+    var downloadFile = function (fileId) {
+        window.location.href = "/Repository/DownloadFile?fileId=" + fileId;
+    };
+
+    var lockDelete = false;
+    var deleteFile = function (button) {
+        if (lockDelete == false) {
+            lockDelete = true;
+            $(button).off('click', deleteFile);
+            var rowIndex = $('#fileListTable').dataTable().fnGetPosition($(button).closest('tr')[0]);
+            var rowData = $('#fileListTable').dataTable().fnGetData(rowIndex);
+            $.ajax({
+                url: '@Url.Action("DeleteFile")',
+                type: "POST",
+                dataType: 'JSON',
+                data: {
+                    'fileId': rowData[0],
+                },
+                success: function () {
+                    $('#fileListTable').dataTable().fnDeleteRow(rowIndex);
+                    lockDelete = false;
+                },
+                error: function () {
+                    lockDelete = false;
+                }
+            });
+        }
+    };
 </script>
