@@ -1,0 +1,26 @@
+﻿<style type="text/css">
+    #shareFileListTable tbody tr:hover td {
+        background-color: #EBEBEB;
+    }
+</style>
+
+<div class="modal fade" id="shareFile" tabindex="-1" role="dialog" aria-labelledby="shareFileLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h2 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-share"></span>   Share File</h2>
+            </div>
+            <div id="modalBody" class="modal-body">
+            <h4>Share or Unshare <b><span id="fileNameModal"></span></b> to yours friends</h4>
+                <hr/>
+                <div id="shareFilePartial">
+                    @Html.Action("_ShareFilePartial")
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

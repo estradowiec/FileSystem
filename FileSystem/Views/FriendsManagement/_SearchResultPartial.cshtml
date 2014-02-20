@@ -69,7 +69,7 @@ else
             $.ajax({
                 url: '@Url.Action("InviteFriend")',
                 type: "POST",
-                dataType: 'JSON',
+                dataType: 'html',
                 data: {
                     'repositoryId': rowData[0],
                     'searchName': '@Model.RepositoryName'
@@ -95,7 +95,7 @@ else
             $.ajax({
                 url: '@Url.Action("CancelInviteFriend")',
                 type: "POST",
-                dataType: 'JSON',
+                dataType: 'html',
                 data: {
                     'repositoryId': rowData[0],
                     'searchName': '@Model.RepositoryName'

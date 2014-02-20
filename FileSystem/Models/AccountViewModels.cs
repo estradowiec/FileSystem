@@ -40,6 +40,69 @@ namespace FileSystem.Models
     }
 
     /// <summary>
+    /// The share file view model.
+    /// </summary>
+    public class ShareFileViewModel
+    {
+        /// <summary>
+        /// Gets or sets the share file id.
+        /// </summary>
+        public int ShareFileId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the friend list.
+        /// </summary>
+        public IList<Repository> FriendList { get; set; }
+
+        /// <summary>
+        /// Gets or sets the shared files.
+        /// </summary>
+        public IList<SharedFile> SharedFiles { get; set; } 
+    }
+
+    /// <summary>
+    /// The share file view model.
+    /// </summary>
+    public class ShareFolderViewModel
+    {
+        /// <summary>
+        /// Gets or sets the share file id.
+        /// </summary>
+        public int ShareFolderId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the friend list.
+        /// </summary>
+        public IList<Repository> FriendList { get; set; }
+
+        /// <summary>
+        /// Gets or sets the shared files.
+        /// </summary>
+        public IList<SharedFolder> SharedFolders{ get; set; }
+    }
+
+    /// <summary>
+    /// The share file view model.
+    /// </summary>
+    public class SharedFoldersViewModel
+    {
+        /// <summary>
+        /// Gets or sets the repository name.
+        /// </summary>
+        public string RepositoryName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the repository id.
+        /// </summary>
+        public int RepositoryId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the folders.
+        /// </summary>
+        public IList<Folder> Folders { get; set; }
+    }
+
+    /// <summary>
     /// The create folder view model.
     /// </summary>
     public class CreateFolderViewModel
@@ -92,6 +155,11 @@ namespace FileSystem.Models
     /// </summary>
     public class RepositoryViewModel
     {
+        /// <summary>
+        /// Gets or sets the repository id.
+        /// </summary>
+        public int RepositoryId { get; set; }
+
         /// <summary>
         /// Gets or sets the repository name.
         /// </summary>

@@ -32,11 +32,6 @@ namespace FileSystemDAL.Models
         public virtual decimal FileSize { get; set; }
 
         /// <summary>
-        /// Gets or sets the file extension.
-        /// </summary>
-        public virtual string FileExtension { get; set; }
-
-        /// <summary>
         /// Gets or sets the date attach.
         /// </summary>
         public virtual DateTime DateAttach { get; set; }
@@ -72,8 +67,7 @@ namespace FileSystemDAL.Models
                 return false;
             }
 
-            return this.FileExtension.Equals(other.FileExtension)
-                && this.FileId.Equals(other.FileId) && this.FileNames.Equals(other.FileNames)
+            return this.FileId.Equals(other.FileId) && this.FileNames.Equals(other.FileNames)
                 && this.FileSize.Equals(other.FileSize) && this.FolderId.Equals(other.FolderId)
                 && this.RepositoryId.Equals(other.RepositoryId);
         }

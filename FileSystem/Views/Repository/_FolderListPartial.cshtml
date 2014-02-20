@@ -1,9 +1,8 @@
 ﻿@model IList<FileSystemDAL.Models.Folder>
 
 <style type="text/css">
-    #folderListTable tbody tr .selectFolder:hover{
+    #folderListTable tbody tr:hover td{
         background-color: #EBEBEB;
-        cursor: pointer;
     }
 </style>
 
@@ -12,6 +11,7 @@
         <tr>
             <th>ID</th>
             <th>Folder Name</th>
+            <th>Share</th>
             <th>Delete</th>
         </tr>
     </thead>
@@ -22,8 +22,11 @@
                 <td>
                     @folder.FolderId
                 </td>
-                <td class="selectFolder">
-                    @folder.FolderName
+                <td>
+                    <a href="@Url.Action("MyRepository","Repository", new{ folderId = folder.FolderId })">@folder.FolderName</a>
+                </td>
+                <td>
+                    <button type="button" onclick="shareFolder(@folder.FolderId, '@Html.Raw(HttpUtility.JavaScriptStringEncode(folder.FolderName))')" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#shareFolder"><span class="glyphicon glyphicon-share"></span> Share</button>
                 </td>
                 <td>
                     <button type="button" onclick="deleteFolder(this)" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove"></span> Delete</button>
@@ -33,20 +36,33 @@
     </tbody>
 </table>
 
+@Html.Partial("_ShareFolderModalPartial")
+
 <script type="text/javascript">
     $(document).ready(function() {
         $('#folderListTable').dataTable({
             'bSortClasses': false,
             "aoColumnDefs": [{ "bSortable": false, "aTargets": ["_all"] }],
-            "aoColumns": [{ "bSearchable": false }, { "bSearchable": true }, { "bSearchable": false }],
+            "aoColumns": [{ "bSearchable": false }, { "bSearchable": true }, { "bSearchable": false }, { "bSearchable": false }],
             "sDom": 'frt'
         });
-
-        $("#folderListTable tbody tr td:eq(1)").on("click", function() {
-                var rowData = $('#folderListTable').dataTable().fnGetData(this);
-                window.location.href = "/Repository/MyRepository?folderId=" + rowData[0];
-        });
     });
+    
+    var shareFolder = function (folderId, folderName) {
+        $.ajax({
+            url: '@Url.Action("_ShareFolderPartial")',
+            type: "POST",
+            dataType: 'html',
+            data: {
+                'folderId': folderId,
+            },
+            success: function (data) {
+                $("#shareFolderPartial").html(data);
+                $("#folderNameModal").html(folderName);
+                $("#shareFolderId").val(folderId);
+            }
+        });
+    };
     
     var lockDeleteFolder = false;
     var deleteFolder = function (button) {

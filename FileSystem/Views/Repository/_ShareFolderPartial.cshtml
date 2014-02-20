@@ -1,0 +1,80 @@
+﻿@model FileSystem.Models.ShareFolderViewModel
+
+<input class="hidden" id="shareFolderId" value="@Model.ShareFolderId"/>
+
+<table id="shareFolderListTable" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Repository Name</th>
+            <th>Share</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var repository in Model.FriendList)
+        {
+            <tr>
+                <td>@repository.RepositoryId</td>
+                <td>@repository.RepositoryName</td>
+                <td>
+                    @if (Model.SharedFolders.Any(x => x.FolderId == Model.ShareFolderId && x.RepositoryId == repository.RepositoryId))
+                    {
+                        <button type="button" onclick="unshareFolderRepository(@repository.RepositoryId)" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-share"></span> Unshare</button>
+                    }
+                    else
+                    {
+                        <button type="button" onclick="shareFolderRepository(@repository.RepositoryId)" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-share"></span> Share</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    var lockShareFolder = false;
+    var shareFolderRepository = function(repositoyId) {
+        if (lockShareFolder == false) {
+            lockShareFolder = true;
+            $.ajax({
+                url: '@Url.Action("ShareFolder")',
+                type: "POST",
+                dataType: 'html',
+                data: {
+                    'folderId': $("#shareFolderId").val(),
+                    'repositoryId' : repositoyId
+                },
+                success: function (data) {
+                    $("#shareFolderPartial").html(data);
+                    lockShareFolder = false;
+                },
+                error: function () {
+                    lockShareFolder = false;
+                }
+            });
+        }
+    };
+    
+    var lockUnshareFolder = false;
+    var unshareFolderRepository = function(repositoyId) {
+        if (lockUnshareFolder == false) {
+            lockUnshareFolder = true;
+            $.ajax({
+                url: '@Url.Action("UnshareFolder")',
+                type: "POST",
+                dataType: 'html',
+                data: {
+                    'folderId': $("#shareFolderId").val(),
+                    'repositoryId' : repositoyId
+                },
+                success: function (data) {
+                    $("#shareFolderPartial").html(data);
+                    lockUnshareFolder = false;
+                },
+                error: function () {
+                    lockUnshareFolder = false;
+                }
+            });
+        }
+    };
+</script>

@@ -1,0 +1,48 @@
+﻿@using FileSystem.Models
+@model FileSystem.Models.RepositoryViewModel
+@{
+    ViewBag.Title = "Friends Repository";
+}           
+
+@Styles.Render("~/Content/jquery.dataTables")
+
+<h2>@ViewBag.Title</h2>
+<h4>Repository @Model.RepositoryName. Browse and download shared files.</h4>
+<hr />           
+<b>Path:</b> <a href="@Url.Action("FriendsRepositoryData", "Repository", new{repositoryId = Model.RepositoryId, repositoryName = Model.RepositoryName})">@Model.RepositoryName</a>:\\
+@foreach (var folder in Model.PathFolderList)
+{
+    if (folder != null)
+    {
+
+        @:<a href="@Url.Action("FriendsRepositoryData", "Repository", new { folderId = folder.FolderId, repositoryId = Model.RepositoryId, repositoryName = Model.RepositoryName })">@folder.FolderName</a>\
+    }
+}
+
+<hr />
+
+<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>
+                <span class="glyphicon glyphicon-folder-close"></span>  Folders
+            </th>
+            <th>
+                <span class="glyphicon glyphicon-file"></span>  Files
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                @Html.Partial("_SharedFolderListPartial", new SharedFoldersViewModel{Folders = Model.Folders,RepositoryId = Model.RepositoryId,RepositoryName = Model.RepositoryName})
+            </td>
+            <td>
+                @Html.Partial("_SharedFileListPartial", Model.Fileses)
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+@Scripts.Render("~/bundles/jquery.dataTables")

@@ -2,7 +2,10 @@
 namespace FileSystemDAL.Manage
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
+
     using FileSystemDAL.Enum;
     using FileSystemDAL.Helper;
     using FileSystemDAL.Models;
@@ -26,7 +29,13 @@ namespace FileSystemDAL.Manage
         public PersonRepository(Repository repository, EPermission permission)
         {
             this.MyRepository = new RepositoryManager(repository, permission);
+            this.FriendRepository = new FriendRepository(permission, repository.RepositoryId);
         }
+
+        /// <summary>
+        /// Gets the friend repository.
+        /// </summary>
+        public FriendRepository FriendRepository { get; private set; }
 
         /// <summary>
         /// The my repository.
@@ -92,7 +101,6 @@ namespace FileSystemDAL.Manage
             var fileUpload = new FileUpload
                             {
                                 DateAttach = DateTime.Now,
-                                FileExtension = Path.GetExtension(fileName),
                                 FileNames = Path.GetFileName(fileName),
                                 FolderId = folderId,
                                 FileSize = fileSize,
@@ -174,7 +182,6 @@ namespace FileSystemDAL.Manage
             var file = new Files
             {
                 DateAttach = DateTime.Now,
-                FileExtension = fileUpload.FileExtension,
                 FileNames = fileUpload.FileNames,
                 FolderId = fileUpload.FolderId,
                 FileSize = fileUpload.FileSize,
@@ -388,13 +395,12 @@ namespace FileSystemDAL.Manage
                                            };
                     session.Save(sharedFile);
                     transaction.Commit();
-                    ////TODO: Share folder
                 }
             }
         }
 
         /// <summary>
-        /// The unshared file.
+        /// The unshare file.
         /// </summary>
         /// <param name="fileId">
         /// The file id.
@@ -402,7 +408,7 @@ namespace FileSystemDAL.Manage
         /// <param name="repositoryId">
         /// The repository id.
         /// </param>
-        public void UnsharedFile(int fileId, int repositoryId)
+        public void UnshareFile(int fileId, int repositoryId)
         {
             using (var session = NHibernateHelper.OpenSession())
             {
@@ -423,27 +429,160 @@ namespace FileSystemDAL.Manage
         /// <summary>
         /// The share folder.
         /// </summary>
-        /// <param name="folder">
-        /// The folder.
+        /// <param name="folderId">
+        /// The folder id.
         /// </param>
-        /// <param name="repository">
-        /// The repository.
+        /// <param name="repositoryId">
+        /// The repository id.
         /// </param>
-        public void ShareFolder(Folder folder, Repository repository)
+        public void ShareFolder(int folderId, int repositoryId)
         {
             using (var session = NHibernateHelper.OpenSession())
             {
                 using (ITransaction transaction = session.BeginTransaction())
                 {
-                    var sharedFolder = new SharedFolder
-                    {
-                        RepositoryId = repository.RepositoryId,
-                        FolderId = folder.FolderId
-                    };
-                    session.Save(sharedFolder);
+                    this.ShareFolder(folderId, repositoryId, session);
                     transaction.Commit();
-                    ////TODO: Share files
                 }
+            }
+        }
+
+        /// <summary>
+        /// The share folder.
+        /// </summary>
+        /// <param name="folderId">
+        /// The folder id.
+        /// </param>
+        /// <param name="repositoryId">
+        /// The repository id.
+        /// </param>
+        /// <param name="session">
+        /// The session.
+        /// </param>
+        private void ShareFolder(int folderId, int repositoryId, ISession session)
+        {
+            var fileList = session.CreateCriteria<Files>().Add(Restrictions.Eq("FolderId", folderId)).List<Files>();
+
+            foreach (var file in fileList)
+            {
+                var sharedFile = new SharedFile
+                {
+                    RepositoryId = repositoryId,
+                    FileId = file.FileId
+                };
+                session.Save(sharedFile);
+            }
+
+            var folderList = session.CreateCriteria<Folder>().Add(Restrictions.Eq("ParrentId", folderId)).List<Folder>();
+
+            foreach (var folderItem in folderList)
+            {
+                this.ShareFolder(folderItem.FolderId, repositoryId, session);
+            }
+
+            var sharedFolder = new SharedFolder
+            {
+                RepositoryId = repositoryId,
+                FolderId = folderId
+            };
+
+            session.Save(sharedFolder);
+        }
+
+        /// <summary>
+        /// The unshare folder.
+        /// </summary>
+        /// <param name="folderId">
+        /// The folder id.
+        /// </param>
+        /// <param name="repositoryId">
+        /// The repository id.
+        /// </param>
+        public void UnshareFolder(int folderId, int repositoryId)
+        {
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                using (ITransaction transaction = session.BeginTransaction())
+                {
+                    this.UnshareFolder(folderId, repositoryId, session);
+                    transaction.Commit();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The unshare folder.
+        /// </summary>
+        /// <param name="folderId">
+        /// The folder id.
+        /// </param>
+        /// <param name="repositoryId">
+        /// The repository id.
+        /// </param>
+        /// <param name="session">
+        /// The session.
+        /// </param>
+        private void UnshareFolder(int folderId, int repositoryId, ISession session)
+        {
+            var fileList = session.CreateCriteria<Files>().Add(Restrictions.Eq("FolderId", folderId)).List<Files>();
+
+            foreach (var file in fileList)
+            {
+                var sharedFile = new SharedFile
+                {
+                    RepositoryId = repositoryId,
+                    FileId = file.FileId
+                };
+                session.Delete(sharedFile);
+            }
+
+            var folderList = session.CreateCriteria<Folder>().Add(Restrictions.Eq("ParrentId", folderId)).List<Folder>();
+
+            foreach (var folderItem in folderList)
+            {
+                this.UnshareFolder(folderItem.FolderId, repositoryId, session);
+            }
+
+            var sharedFolder =
+                session.CreateCriteria<SharedFolder>()
+                    .Add(Restrictions.Eq("FolderId", folderId))
+                    .Add(Restrictions.Eq("RepositoryId", repositoryId))
+                    .UniqueResult<SharedFolder>();
+
+            session.Delete(sharedFolder);
+        }
+
+        /// <summary>
+        /// The get path folders dictionary.
+        /// </summary>
+        /// <param name="folderId">
+        /// The folder id.
+        /// </param>
+        /// <returns>
+        /// The <see cref="List{T}"/>.
+        /// </returns>
+        public List<Folder> GetPathFoldersDictionary(int? folderId)
+        {
+            if (!folderId.HasValue)
+            {
+                return new List<Folder>();
+            }
+
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                var pathFolderList = new List<Folder>();
+
+                var currentFolder =
+                    session.CreateCriteria<Folder>().Add(Restrictions.Eq("FolderId", folderId)).UniqueResult<Folder>();
+                pathFolderList.Add(currentFolder);
+                while (currentFolder.ParrentId.HasValue)
+                {
+                    currentFolder = session.CreateCriteria<Folder>().Add(Restrictions.Eq("FolderId", currentFolder.ParrentId)).UniqueResult<Folder>();
+                    pathFolderList.Add(currentFolder);
+                }
+
+                pathFolderList.Add(null);
+                return Enumerable.Reverse(pathFolderList).ToList();
             }
         }
 

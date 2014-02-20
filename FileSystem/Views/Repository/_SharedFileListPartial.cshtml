@@ -1,0 +1,56 @@
+﻿@model IList<FileSystemDAL.Models.Files>
+    
+<style type="text/css">
+    #fileListTable tbody tr:hover td {
+        background-color: #EBEBEB;
+    }
+</style>
+
+<table id="fileListTable" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>File Name</th>
+            <th>Size [KB]</th>
+            <th>Date Upload</th>
+            <th>Download</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var file in Model)
+        {
+            <tr>
+                <td>
+                    @file.FileId
+                </td>
+                <td>
+                    @file.FileNames
+                </td>
+                <td>
+                    @((int)file.FileSize / 1024)
+                </td>
+                <td>
+                    @file.DateAttach.ToString("g")
+                </td>
+                <td>
+                    <button type="button" onclick="downloadFile(@file.FileId)" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-cloud-download"></span> Download</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#fileListTable').dataTable({
+            'bSortClasses': false,
+            "aoColumnDefs": [{ "bSortable": false, "aTargets": ["_all"] }],
+            "aoColumns": [{ "bSearchable": false }, { "bSearchable": true }, { "bSearchable": false }, { "bSearchable": false }, { "bSearchable": false }],
+        });
+    });
+    
+    var downloadFile = function (fileId) {
+        window.location.href = "/Repository/DownloadFile?fileId=" + fileId;
+    };
+
+</script>

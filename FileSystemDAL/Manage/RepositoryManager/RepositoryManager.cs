@@ -10,7 +10,10 @@
 
     using Microsoft.AspNet.Identity;
 
+    using NHibernate;
     using NHibernate.Criterion;
+    using NHibernate.Hql.Ast.ANTLR;
+    using NHibernate.Transform;
 
     /// <summary>
     /// The repository manager.
@@ -71,6 +74,58 @@
             }
 
             return errors.Any() ? IdentityResult.Failed(errors.ToArray()) : IdentityResult.Success;
+        }
+
+        /// <summary>
+        /// The get shared files.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="IList"/>.
+        /// </returns>
+        public IList<SharedFile> GetSharedFiles()
+        {
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                var query =
+                    session.CreateSQLQuery(
+                        string.Format(
+                            "select SharedFile.* from SharedFile inner join Files ON SharedFile.FileID=Files.FileID where Files.RepositoryID={0}",
+                            this.Repository.RepositoryId))
+                        .AddScalar("SharedFileId", NHibernateUtil.Int32)
+                        .AddScalar("FileId", NHibernateUtil.Int32)
+                        .AddScalar("RepositoryId", NHibernateUtil.Int32)
+                        .SetResultTransformer(Transformers.AliasToBean(typeof(SharedFile)));
+
+                var sharedFiles = query.List<SharedFile>();
+
+                return sharedFiles;
+            }
+        }
+
+        /// <summary>
+        /// The get shared files.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="IList"/>.
+        /// </returns>
+        public IList<SharedFolder> GetSharedFolders()
+        {
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                var query =
+                    session.CreateSQLQuery(
+                        string.Format(
+                            "select SharedFolder.* from SharedFolder inner join Folder ON SharedFolder.FolderID=Folder.FolderID where Folder.RepositoryID={0}",
+                            this.Repository.RepositoryId))
+                        .AddScalar("SharedFolderId", NHibernateUtil.Int32)
+                        .AddScalar("FolderId", NHibernateUtil.Int32)
+                        .AddScalar("RepositoryId", NHibernateUtil.Int32)
+                        .SetResultTransformer(Transformers.AliasToBean(typeof(SharedFolder)));
+
+                var sharedFolder = query.List<SharedFolder>();
+
+                return sharedFolder;
+            }
         }
 
         /// <summary>
@@ -164,40 +219,6 @@
                     .Add(Restrictions.Ge("Permission", this.Permission))
                     .List<Folder>();
                 return folderList;
-            }
-        }
-
-        /// <summary>
-        /// The get path folders dictionary.
-        /// </summary>
-        /// <param name="folderId">
-        /// The folder id.
-        /// </param>
-        /// <returns>
-        /// The <see cref="List"/>.
-        /// </returns>
-        public List<Folder> GetPathFoldersDictionary(int? folderId)
-        {
-            if (!folderId.HasValue)
-            {
-                return new List<Folder>();
-            }
-
-            using (var session = NHibernateHelper.OpenSession())
-            {
-                var pathFolderList = new List<Folder>();
-                
-                var currentFolder =
-                    session.CreateCriteria<Folder>().Add(Restrictions.Eq("FolderId", folderId)).UniqueResult<Folder>();
-                pathFolderList.Add(currentFolder);
-                while (currentFolder.ParrentId.HasValue)
-                {
-                    currentFolder = session.CreateCriteria<Folder>().Add(Restrictions.Eq("FolderId", currentFolder.ParrentId)).UniqueResult<Folder>();
-                    pathFolderList.Add(currentFolder);
-                }
-
-                pathFolderList.Add(null);
-                return Enumerable.Reverse(pathFolderList).ToList();
             }
         }
 

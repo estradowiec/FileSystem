@@ -132,9 +132,7 @@ namespace FileSystem.Controllers
             repositorySearch.IncomingInvitationList = this.partnershipManager.GetInvitation();
             repositorySearch.AcceptedInvitationList = this.partnershipManager.GetFriends();
 
-            var searchResultPartial = this.RenderRazorViewToString("_SearchResultPartial", repositorySearch);
-
-            return this.Json(searchResultPartial);
+            return this.PartialView("_SearchResultPartial", repositorySearch);
         }
 
         /// <summary>
@@ -172,9 +170,7 @@ namespace FileSystem.Controllers
             repositorySearch.IncomingInvitationList = this.partnershipManager.GetInvitation();
             repositorySearch.AcceptedInvitationList = this.partnershipManager.GetFriends();
 
-            var searchResultPartial = this.RenderRazorViewToString("_SearchResultPartial", repositorySearch);
-
-            return this.Json(searchResultPartial);
+            return this.PartialView("_SearchResultPartial", repositorySearch);
         }
 
         /// <summary>
@@ -313,31 +309,6 @@ namespace FileSystem.Controllers
             if (user.Permission.Equals(EPermission.RepositoryAdmin))
             {
                 this.partnershipManager = new PartnershipManager(this.authorization.GetRepository(user.PersonId));
-            }
-        }
-
-        /// <summary>
-        /// The render razor view to string.
-        /// </summary>
-        /// <param name="viewName">
-        /// The view name.
-        /// </param>
-        /// <param name="model">
-        /// The model.
-        /// </param>
-        /// <returns>
-        /// The <see cref="string"/>.
-        /// </returns>
-        private string RenderRazorViewToString(string viewName, object model)
-        {
-            ViewData.Model = model;
-            using (var sw = new StringWriter())
-            {
-                var viewResult = ViewEngines.Engines.FindPartialView(ControllerContext, viewName);
-                var viewContext = new ViewContext(ControllerContext, viewResult.View, ViewData, TempData, sw);
-                viewResult.View.Render(viewContext, sw);
-                viewResult.ViewEngine.ReleaseView(this.ControllerContext, viewResult.View);
-                return sw.GetStringBuilder().ToString();
             }
         }
     }

@@ -32,11 +32,6 @@ namespace FileSystemDAL.Models
         public virtual decimal FileSize { get; set; }
 
         /// <summary>
-        /// Gets or sets the file extension.
-        /// </summary>
-        public virtual string FileExtension { get; set; }
-
-        /// <summary>
         /// Gets or sets the date attach.
         /// </summary>
         public virtual DateTime DateAttach { get; set; }

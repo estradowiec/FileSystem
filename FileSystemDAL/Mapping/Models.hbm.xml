@@ -30,7 +30,6 @@
     </id>
     <property name="FileNames" />
     <property name="FileSize" />
-    <property name="FileExtension" />
     <property name="DateAttach"/>
     <property name="Permission"/>
     <property name="RepositoryId" column="RepositoryID"/>
@@ -43,7 +42,6 @@
     </id>
     <property name="FileNames" />
     <property name="FileSize" />
-    <property name="FileExtension" />
     <property name="DateAttach"/>
     <property name="Permission"/>
     <property name="RepositoryId"/>

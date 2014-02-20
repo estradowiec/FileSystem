@@ -58,6 +58,7 @@
     <Compile Include="Manage\Authorization\Authorization.cs" />
     <Compile Include="Manage\AdminRepository\IAdminRepository.cs" />
     <Compile Include="Helper\NHibernateHelper.cs" />
+    <Compile Include="Manage\FriendRepository.cs" />
     <Compile Include="Manage\PartnershipManager\PatnershipManager.cs" />
     <Compile Include="Manage\RepositoryManager\RepositoryManager.cs" />
     <Compile Include="Models\FileUpload.cs" />

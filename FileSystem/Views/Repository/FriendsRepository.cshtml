@@ -1,0 +1,41 @@
+﻿@model List<FileSystemDAL.Models.Repository>
+
+@{
+    ViewBag.Title = "Friends Repository";
+}
+
+@Styles.Render("~/Content/jquery.dataTables")
+
+<h2>@ViewBag.Title</h2>
+<h4>Freinds Repository. Choose repository to browse and dpwnload shared data.</h4>
+<hr />
+<table id="friendsList" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Repository Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var repository in Model)
+        {
+            <tr>
+                <td>@repository.RepositoryId</td>
+                <td><a href="@Url.Action("FriendsRepositoryData","Repository", new{ repositoryId = repository.RepositoryId, repositoryName = repository.RepositoryName })">@repository.RepositoryName</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@Scripts.Render("~/bundles/jquery.dataTables")
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#friendsList').dataTable({
+            'bSortClasses': false,
+            "aoColumnDefs": [{ "bSortable": false, "aTargets": ["_all"] }],
+            "aoColumns": [{ "bSearchable": false }, { "bSearchable": true }]
+        });
+    });
+</script>

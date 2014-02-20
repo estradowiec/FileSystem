@@ -19,6 +19,8 @@ namespace FileSystem.Controllers
     /// </summary>
     public class RepositoryController : Controller
     {
+        #region Fields
+
         /// <summary>
         /// The authorization.
         /// </summary>
@@ -30,15 +32,13 @@ namespace FileSystem.Controllers
         private Authorization authorization;
 
         /// <summary>
-        /// GET: /Repository/
+        /// The partnership manager.
         /// </summary>
-        /// <returns>
-        /// The <see cref="ActionResult"/>.
-        /// </returns>
-        public ActionResult Index()
-        {
-            return this.View();
-        }
+        private PartnershipManager partnershipManager;
+
+        #endregion
+
+        #region MyRepository
 
         /// <summary>
         /// The my repository.
@@ -66,10 +66,63 @@ namespace FileSystem.Controllers
             repositoryData.RepositoryName = this.personRepository.MyRepository.Repository.RepositoryName;
             repositoryData.Folders = this.personRepository.MyRepository.GetFolders(folderId);
             repositoryData.Fileses = this.personRepository.MyRepository.GetFiles(folderId);
-            repositoryData.PathFolderList = this.personRepository.MyRepository.GetPathFoldersDictionary(folderId);
+            repositoryData.PathFolderList = this.personRepository.GetPathFoldersDictionary(folderId);
 
             return this.View(repositoryData);
         }
+
+        #endregion
+
+        #region FriendsRepository
+
+        public ActionResult FriendsRepository()
+        {
+            if (!this.User.Identity.IsAuthenticated)
+            {
+                return this.RedirectToAction("Login", "Account");
+            }
+
+            var user = this.authorization.GetPerson(int.Parse(this.User.Identity.GetUserId()));
+            if ((int)user.Permission == 0)
+            {
+                return this.RedirectToAction("Index", "Home");
+            }
+
+            var friendsList = this.partnershipManager.GetFriends();
+
+            return this.View(friendsList);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// The friends repository data.
+        /// </summary>
+        /// <param name="folderId">
+        /// The folder id.
+        /// </param>
+        /// <param name="repositoryId">
+        /// The repository id.
+        /// </param>
+        /// <param name="repositoryName">
+        /// The repository name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ViewResult"/>.
+        /// </returns>
+        public ViewResult FriendsRepositoryData(int? folderId, int repositoryId, string repositoryName)
+        {
+            var repositoryData = new RepositoryViewModel();
+            repositoryData.RepositoryName = repositoryName;
+            repositoryData.Fileses = this.personRepository.FriendRepository.GetFriendsFiles(folderId, repositoryId);
+            repositoryData.Folders = this.personRepository.FriendRepository.GetFriendsFolders(folderId, repositoryId);
+            repositoryData.PathFolderList = this.personRepository.GetPathFoldersDictionary(folderId);
+            repositoryData.RepositoryId = repositoryId;
+
+            return this.View(repositoryData);
+        }
+
+        #region _CreateFolderPartial
 
         /// <summary>
         /// The _ create folder partial.
@@ -99,6 +152,10 @@ namespace FileSystem.Controllers
 
             return this.PartialView(model);
         }
+
+        #endregion
+
+        #region UploadFile
 
         /// <summary>
         /// The upload file.
@@ -131,6 +188,10 @@ namespace FileSystem.Controllers
             this.personRepository.UploadFile(ConfigurationManager.AppSettings["UploadPath"], fileUploadId, file.InputStream);
             return this.Json(new { Success = true });
         }
+
+        #endregion
+
+        #region InitUpload
 
         /// <summary>
         /// The init upload.
@@ -169,6 +230,10 @@ namespace FileSystem.Controllers
             return this.Json(new { FileUploadId = fileUploadId });
         }
 
+        #endregion
+
+        #region FinishUploadFile
+
         /// <summary>
         /// The finish upload file.
         /// </summary>
@@ -197,6 +262,10 @@ namespace FileSystem.Controllers
             return this.Json(new { Success = true });
         }
 
+        #endregion
+
+        #region DeleteFile
+
         /// <summary>
         /// The delete file.
         /// </summary>
@@ -224,6 +293,10 @@ namespace FileSystem.Controllers
 
             return this.Json(new { Success = true });
         }
+
+        #endregion
+
+        #region DownloadFile
 
         /// <summary>
         /// The download file.
@@ -267,6 +340,10 @@ namespace FileSystem.Controllers
             return this.Json(new { Success = true });
         }
 
+        #endregion
+
+        #region DeleteFolder
+
         /// <summary>
         /// The delete folder.
         /// </summary>
@@ -295,6 +372,179 @@ namespace FileSystem.Controllers
             return this.Json(new { Success = true });
         }
 
+        #endregion
+
+        #region ShareFolder
+
+        /// <summary>
+        /// The share folder.
+        /// </summary>
+        /// <param name="folderId">
+        /// The folder id.
+        /// </param>
+        /// <param name="repositoryId">
+        /// The repository id.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ActionResult"/>.
+        /// </returns>
+        [HttpPost]
+        public ActionResult ShareFolder(int folderId, int repositoryId)
+        {
+            this.personRepository.ShareFolder(folderId, repositoryId);
+
+            var shareFolderModel = new ShareFolderViewModel();
+            shareFolderModel.FriendList = this.partnershipManager.GetFriends();
+            shareFolderModel.SharedFolders = this.personRepository.MyRepository.GetSharedFolders();
+            shareFolderModel.ShareFolderId = folderId;
+
+            return this.PartialView("_ShareFolderPartial", shareFolderModel);
+        }
+
+        #endregion
+
+        #region UnshareFolder
+
+        /// <summary>
+        /// The share folder.
+        /// </summary>
+        /// <param name="folderId">
+        /// The folder id.
+        /// </param>
+        /// <param name="repositoryId">
+        /// The repository id.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ActionResult"/>.
+        /// </returns>
+        [HttpPost]
+        public ActionResult UnshareFolder(int folderId, int repositoryId)
+        {
+            this.personRepository.UnshareFolder(folderId, repositoryId);
+
+            var shareFolderModel = new ShareFolderViewModel();
+            shareFolderModel.FriendList = this.partnershipManager.GetFriends();
+            shareFolderModel.SharedFolders = this.personRepository.MyRepository.GetSharedFolders();
+            shareFolderModel.ShareFolderId = folderId;
+
+            return this.PartialView("_ShareFolderPartial", shareFolderModel);
+        }
+
+        #endregion
+
+        #region ShareFile
+
+        /// <summary>
+        /// The share file.
+        /// </summary>
+        /// <param name="fileId">
+        /// The file id.
+        /// </param>
+        /// <param name="repositoryId">
+        /// The repository id.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ActionResult"/>.
+        /// </returns>
+        [HttpPost]
+        public ActionResult ShareFile(int fileId, int repositoryId)
+        {
+            this.personRepository.ShareFile(fileId, repositoryId);
+
+            var shareFileModel = new ShareFileViewModel();
+            shareFileModel.FriendList = this.partnershipManager.GetFriends();
+            shareFileModel.SharedFiles = this.personRepository.MyRepository.GetSharedFiles();
+            shareFileModel.ShareFileId = fileId;
+
+            return this.PartialView("_ShareFilePartial", shareFileModel);
+        }
+
+        #endregion
+
+        #region UnshareFile
+
+        /// <summary>
+        /// The share file.
+        /// </summary>
+        /// <param name="fileId">
+        /// The file id.
+        /// </param>
+        /// <param name="repositoryId">
+        /// The repository id.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ActionResult"/>.
+        /// </returns>
+        [HttpPost]
+        public ActionResult UnshareFile(int fileId, int repositoryId)
+        {
+            this.personRepository.UnshareFile(fileId, repositoryId);
+
+            var shareFileModel = new ShareFileViewModel();
+            shareFileModel.FriendList = this.partnershipManager.GetFriends();
+            shareFileModel.SharedFiles = this.personRepository.MyRepository.GetSharedFiles();
+            shareFileModel.ShareFileId = fileId;
+
+            return this.PartialView("_ShareFilePartial", shareFileModel);
+        }
+
+        #endregion
+
+        #region _ShareFilePartial
+
+        /// <summary>
+        /// The _ share file partial.
+        /// </summary>
+        /// <param name="fileId">
+        /// The file id.
+        /// </param>
+        /// <returns>
+        /// The <see cref="PartialViewResult"/>.
+        /// </returns>
+        public PartialViewResult _ShareFilePartial(int? fileId)
+        {
+            var shareFileModel = new ShareFileViewModel();
+            shareFileModel.FriendList = this.partnershipManager.GetFriends();
+            shareFileModel.SharedFiles = this.personRepository.MyRepository.GetSharedFiles();
+            if (fileId.HasValue)
+            {
+                shareFileModel.ShareFileId = fileId.Value;
+            }
+
+            return this.PartialView(shareFileModel);
+        }
+
+        #endregion
+
+        #region _ShareFolderPartial
+
+        /// <summary>
+        /// The _ share folder partial.
+        /// </summary>
+        /// <param name="folderId">
+        /// The folder id.
+        /// </param>
+        /// <returns>
+        /// The <see cref="PartialViewResult"/>.
+        /// </returns>
+        public PartialViewResult _ShareFolderPartial(int? folderId)
+        {
+            var shareFolderModel = new ShareFolderViewModel();
+            shareFolderModel.FriendList = this.partnershipManager.GetFriends();
+            shareFolderModel.SharedFolders = this.personRepository.MyRepository.GetSharedFolders();
+
+            if (folderId.HasValue)
+            {
+                shareFolderModel.ShareFolderId = folderId.Value;
+            }
+
+            return this.PartialView(shareFolderModel);
+        }
+
+        #endregion
+
+        #region Initialize
+
         /// <summary>
         /// The initialize.
         /// </summary>
@@ -315,8 +565,13 @@ namespace FileSystem.Controllers
             if ((int)user.Permission > 0)
             {
                 this.personRepository = new PersonRepository(this.authorization.GetRepository(user.PersonId), user.Permission);
+                this.partnershipManager = new PartnershipManager(this.personRepository.MyRepository.Repository);
             }
         }
+
+        #endregion
+
+        #region AddErrors
 
         /// <summary>
         /// The add errors.
@@ -331,5 +586,7 @@ namespace FileSystem.Controllers
                 ModelState.AddModelError(string.Empty, error);
             }
         }
+
+        #endregion
     }
 }
