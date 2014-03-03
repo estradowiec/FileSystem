@@ -23,7 +23,6 @@ namespace FileSystemDAL.Manage
     /// </summary>
     public class AdminRepository : PersonRepository
     {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="AdminRepository"/> class.
         /// </summary>
@@ -32,7 +31,13 @@ namespace FileSystemDAL.Manage
         /// </param>
         public AdminRepository(Repository repository) : base(repository, EPermission.RepositoryAdmin)
         {
+            this.PartnershipManager = new PartnershipManager(repository);
         }
+
+        /// <summary>
+        /// Gets the partnership manager.
+        /// </summary>
+        public PartnershipManager PartnershipManager { get; private set; }
 
         /// <summary>
         /// The validate user account async.

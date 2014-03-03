@@ -37,53 +37,35 @@ namespace FileSystemDAL.Tests
         }
 
         /// <summary>
-        /// The get repository test.
-        /// </summary>
-        [Test]
-        public void GetRepositoryTest()
-        {
-            foreach (var repositoryName in this.repositoryNameList)
-            {
-                this.AddRepository(
-                    new Repository { RepositoryName = repositoryName, DateAttach = DateTime.Now, IsActive = false });
-            }
-
-            var listRepository = this.admin.GetListRepository();
-
-            Assert.AreEqual(listRepository.Count, this.repositoryNameList.Count);
-            Assert.AreEqual(listRepository.Select(x => x.RepositoryName).SequenceEqual(this.repositoryNameList), true);
-
-            foreach (var repository in listRepository)
-            {
-                this.admin.DeleteRepository(repository);
-            }
-        }
-
-        /// <summary>
         /// The delete repository test.
         /// </summary>
         [Test]
         public void DeleteRepositoryTest()
         {
+            var addedRepository = new List<Repository>();
+            
             foreach (var repositoryName in this.repositoryNameList)
             {
-                this.AddRepository(new Repository { RepositoryName = repositoryName, DateAttach = DateTime.Now, IsActive = false });
+                addedRepository.Add(this.AddRepository(new Repository { RepositoryName = repositoryName, DateAttach = DateTime.Now, IsActive = false }));
             }
 
             var listRepository = this.admin.GetListRepository();
 
-            Assert.AreEqual(listRepository.Select(x => x.RepositoryName).SequenceEqual(this.repositoryNameList), true);
-
-            foreach (var repository in listRepository)
+            foreach (var repository in addedRepository)
             {
-                this.admin.DeleteRepository(repository);
+                Assert.AreEqual(true, listRepository.Any(x => x.RepositoryName == repository.RepositoryName));
+            }
+
+            foreach (var repository in addedRepository)
+            {
+                this.admin.DeleteRepository(repository.RepositoryId);
             }
 
             listRepository = this.admin.GetListRepository();
 
-            foreach (var repositoryName in this.repositoryNameList)
+            foreach (var repository in addedRepository)
             {
-                Assert.AreEqual(listRepository.Select(x => x.RepositoryName).Any(x => x == repositoryName), false);
+                Assert.AreEqual(false, listRepository.Any(x => x.RepositoryName == repository.RepositoryName));
             }
         }
 
@@ -101,14 +83,14 @@ namespace FileSystemDAL.Tests
 
             Assert.AreEqual(repository.IsActive, false);
 
-            this.admin.ActiveRepository(repository);
+            this.admin.ActiveRepository(repository.RepositoryId);
             listRepository = this.admin.GetListRepository();
 
             repository = listRepository.Single(x => x.RepositoryName == this.repositoryNameList[0]);
 
             Assert.AreEqual(repository.IsActive, true);
 
-            this.admin.DeleteRepository(repository);
+            this.admin.DeleteRepository(repository.RepositoryId);
         }
 
         /// <summary>
@@ -125,14 +107,14 @@ namespace FileSystemDAL.Tests
 
             Assert.AreEqual(repository.IsActive, true);
 
-            this.admin.DeactiveRepository(repository);
+            this.admin.DeactiveRepository(repository.RepositoryId);
             listRepository = this.admin.GetListRepository();
 
             repository = listRepository.Single(x => x.RepositoryName == this.repositoryNameList[0]);
 
             Assert.AreEqual(repository.IsActive, false);
 
-            this.admin.DeleteRepository(repository);
+            this.admin.DeleteRepository(repository.RepositoryId);
         }
 
         /// <summary>
@@ -141,17 +123,18 @@ namespace FileSystemDAL.Tests
         /// <param name="repository">
         /// The repository.
         /// </param>
-        private void AddRepository(Repository repository)
+        private Repository AddRepository(Repository repository)
         {
 
             using (var session = NHibernateHelper.OpenSession())
             {
                 using (ITransaction transaction = session.BeginTransaction())
                 {
-                    session.Save(repository);
+                    repository.RepositoryId = (int)session.Save(repository);
                     transaction.Commit();
                 }
             }
+            return repository;
         }
     }
 }

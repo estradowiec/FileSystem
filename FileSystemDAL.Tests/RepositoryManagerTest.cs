@@ -102,7 +102,6 @@ namespace FileSystemDAL.Tests
                                 RepositoryId = repository.RepositoryId,
                                 Permission = EPermission.UserHigh,
                                 FileNames = "Anon1",
-                                FileExtension = "exe",
                                 FileSize = 46,
                                 FolderId = this.rootFolder.FolderId
                             };
@@ -115,7 +114,6 @@ namespace FileSystemDAL.Tests
                 RepositoryId = repository.RepositoryId,
                 Permission = EPermission.UserLow,
                 FileNames = "Anon2",
-                FileExtension = "exe",
                 FileSize = 46,
                 FolderId = this.rootFolder.FolderId
             };
@@ -128,7 +126,6 @@ namespace FileSystemDAL.Tests
                 RepositoryId = repository.RepositoryId,
                 Permission = EPermission.UserMedium,
                 FileNames = "Anon3",
-                FileExtension = "exe",
                 FileSize = 46,
                 FolderId = this.parrentFolder.FolderId
             };
@@ -141,7 +138,6 @@ namespace FileSystemDAL.Tests
                 RepositoryId = repository.RepositoryId,
                 Permission = EPermission.RepositoryAdmin,
                 FileNames = "Anon4",
-                FileExtension = "exe",
                 FileSize = 46,
                 FolderId = this.parrentFolder.FolderId
             };

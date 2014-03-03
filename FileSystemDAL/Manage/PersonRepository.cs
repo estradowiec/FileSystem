@@ -253,8 +253,6 @@ namespace FileSystemDAL.Manage
                         session.Delete(sharedFile);
                     }
 
-                    transaction.Commit();
-
                     files =
                         session.CreateCriteria(typeof(Files))
                             .Add(Restrictions.Eq("FileId", fileId))

@@ -92,7 +92,7 @@ namespace FileSystemDAL.Tests
         [Test]
         public void InviteFriendTest()
         {
-            this.partnershipManagerFrom.InviteFriend(this.repositoryRelatingTo);
+            this.partnershipManagerFrom.InviteFriend(this.repositoryRelatingTo.RepositoryId);
 
             var invitation = this.partnershipManagerFrom.GetInvitation();
             var invitedFriend = invitation.Find(x => x.RepositoryId == this.repositoryRelatingTo.RepositoryId);
@@ -103,7 +103,7 @@ namespace FileSystemDAL.Tests
             Assert.IsNotNull(invitedFriend);
             Assert.AreEqual(invitedFriend.RepositoryName, this.repositoryRelatingFrom.RepositoryName);
 
-            this.partnershipManagerFrom.RemoveFriend(this.repositoryRelatingTo);
+            this.partnershipManagerFrom.RemoveFriend(this.repositoryRelatingTo.RepositoryId);
         }
 
         /// <summary>
@@ -112,15 +112,15 @@ namespace FileSystemDAL.Tests
         [Test]
         public void AcceptInvitationTest()
         {
-            this.partnershipManagerFrom.InviteFriend(this.repositoryRelatingTo);
-            this.partnershipManagerTo.AcceptInvitation(this.repositoryRelatingFrom);
+            this.partnershipManagerFrom.InviteFriend(this.repositoryRelatingTo.RepositoryId);
+            this.partnershipManagerTo.AcceptInvitation(this.repositoryRelatingFrom.RepositoryId);
 
             var invitation = this.partnershipManagerTo.GetFriends();
             var invitedFriend = invitation.Find(x => x.RepositoryId == this.repositoryRelatingFrom.RepositoryId);
             Assert.IsNotNull(invitedFriend);
             Assert.AreEqual(invitedFriend.RepositoryName, this.repositoryRelatingFrom.RepositoryName);
 
-            this.partnershipManagerFrom.RemoveFriend(this.repositoryRelatingTo);
+            this.partnershipManagerFrom.RemoveFriend(this.repositoryRelatingTo.RepositoryId);
         }
 
         /// <summary>
@@ -129,8 +129,8 @@ namespace FileSystemDAL.Tests
         [Test]
         public void RemoveFriendTest()
         {
-            this.partnershipManagerFrom.InviteFriend(this.repositoryRelatingTo);
-            this.partnershipManagerFrom.RemoveFriend(this.repositoryRelatingTo);
+            this.partnershipManagerFrom.InviteFriend(this.repositoryRelatingTo.RepositoryId);
+            this.partnershipManagerFrom.RemoveFriend(this.repositoryRelatingTo.RepositoryId);
 
             var invitation = this.partnershipManagerTo.GetInvitation();
             var invitedFriend = invitation.Find(x => x.RepositoryId == this.repositoryRelatingFrom.RepositoryId);

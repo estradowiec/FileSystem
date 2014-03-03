@@ -22,3 +22,5 @@ E:\Git\FileSystem\FileSystemDAL.Tests\bin\Debug\nunit.framework.dll
 E:\Git\FileSystem\FileSystemDAL.Tests\bin\Debug\System.Data.SqlServerCe.dll
 E:\Git\FileSystem\FileSystemDAL.Tests\bin\Debug\FileSystemDAL.pdb
 E:\Git\FileSystem\FileSystemDAL.Tests\obj\Debug\FileSystemDAL.Tests.pdb
+E:\Git\FileSystem\FileSystemDAL.Tests\bin\Debug\Microsoft.AspNet.Identity.Core.dll
+E:\Git\FileSystem\FileSystemDAL.Tests\bin\Debug\Microsoft.AspNet.Identity.Core.xml

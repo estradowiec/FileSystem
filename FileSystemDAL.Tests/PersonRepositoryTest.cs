@@ -26,7 +26,7 @@ namespace FileSystemDAL.Tests
         /// <summary>
         /// The path.
         /// </summary>
-        private const string Path = @"E:\Programowanie\ASP .NET\FileSystem\Files\";
+        private const string Path = @"E:\Git\FileSystem\Files\";
 
         /// <summary>
         /// The person repository.
@@ -39,9 +39,9 @@ namespace FileSystemDAL.Tests
         private AdminRepository friendRepository;
 
         /// <summary>
-        /// The files.
+        /// The file id.
         /// </summary>
-        private Files files;
+        private int? fileId;
 
         /// <summary>
         /// The folder.
@@ -67,7 +67,7 @@ namespace FileSystemDAL.Tests
                     this.folder = new Folder
                                      {
                                          DateAttach = DateTime.Now,
-                                         FolderName = "NewFolder.exe",
+                                         FolderName = "NewFolder",
                                          ParrentId = null,
                                          Permission = EPermission.RepositoryAdmin,
                                          RepositoryId = repository.RepositoryId
@@ -77,15 +77,17 @@ namespace FileSystemDAL.Tests
                     transaction.Commit();
                 }
             }
-            
-            this.files = this.personRepository.InitFile("NewFolder.exe", 1000, this.folder.FolderId, EPermission.RepositoryAdmin);
+
+            this.fileId = this.personRepository.InitFile("NewFile.jpg", File.OpenRead(string.Format(@"{0}\..\..\TestFile\TestFileAll.jpg", AppDomain.CurrentDomain.BaseDirectory)).Length, this.folder.FolderId, EPermission.RepositoryAdmin);
             for (var i = 1; i <= 10; i++)
             {
                 this.personRepository.UploadFile(
                     Path,
-                    this.files.FileId,
+                    this.fileId.Value,
                     File.OpenRead(string.Format(@"{0}\..\..\TestFile\TestFile{1}.jpg", AppDomain.CurrentDomain.BaseDirectory, i)));
             }
+
+            this.fileId = this.personRepository.FinishUploadFile(this.fileId.Value, Path);
         }
 
         /// <summary>
@@ -98,11 +100,11 @@ namespace FileSystemDAL.Tests
             using (var session = NHibernateHelper.OpenSession())
             {
                 file = session.CreateCriteria(typeof(Files))
-                    .Add(Restrictions.Eq("FileId", this.files.FileId))
+                    .Add(Restrictions.Eq("FileId", this.fileId))
                     .UniqueResult<Files>();
             }
 
-            Assert.AreEqual(file.FileId, this.files.FileId);
+            Assert.AreEqual(file.FileId, this.fileId);
         }
 
         /// <summary>
@@ -111,7 +113,7 @@ namespace FileSystemDAL.Tests
         [Test]
         public void DownloadFileTest()
         {
-            var fileStream = this.personRepository.DownloadFile(Path, this.files.FileId);
+            var fileStream = this.personRepository.DownloadFile(Path, this.fileId.Value);
             Assert.AreEqual(fileStream, File.OpenRead(string.Format(@"{0}\..\..\TestFile\TestFileAll.jpg", AppDomain.CurrentDomain.BaseDirectory)));
             fileStream.Close();
         }
@@ -122,19 +124,14 @@ namespace FileSystemDAL.Tests
         [Test]
         public void ShareFileTest()
         {
-            this.personRepository.PartnershipManager.InviteFriend(this.friendRepository.MyRepository.Repository);
-            this.friendRepository.AcceptInvitation(this.personRepository.MyRepository.Repository);
-            this.personRepository.ShareFile(this.files.FileId, this.friendRepository.MyRepository.Repository.RepositoryId);
+            this.personRepository.PartnershipManager.InviteFriend(this.friendRepository.MyRepository.Repository.RepositoryId);
+            this.friendRepository.PartnershipManager.AcceptInvitation(this.personRepository.MyRepository.Repository.RepositoryId);
+            this.personRepository.ShareFile(this.fileId.Value, this.friendRepository.MyRepository.Repository.RepositoryId);
             var friendFile = this.friendRepository.MyRepository.GetFiles(this.folder.FolderId, this.personRepository.MyRepository.Repository.RepositoryId).FirstOrDefault();
-            this.personRepository.RemoveFriend(this.friendRepository.MyRepository.Repository);
-            this.personRepository.UnsharedFile(this.files.FileId, this.friendRepository.MyRepository.Repository.RepositoryId);
-            
-            Assert.AreEqual(friendFile.FileId, this.files.FileId);
-            Assert.AreEqual(friendFile.FileNames, this.files.FileNames);
-            Assert.AreEqual(friendFile.FileSize, this.files.FileSize);
-            Assert.AreEqual(friendFile.FolderId, this.files.FolderId);
-            Assert.AreEqual(friendFile.Permission, this.files.Permission);
-            Assert.AreEqual(friendFile.RepositoryId, this.files.RepositoryId);
+            this.personRepository.PartnershipManager.RemoveFriend(this.friendRepository.MyRepository.Repository.RepositoryId);
+            this.personRepository.UnshareFile(this.fileId.Value, this.friendRepository.MyRepository.Repository.RepositoryId);
+
+            Assert.AreEqual(friendFile.FileId, this.fileId);
         }
 
         /// <summary>
@@ -143,14 +140,14 @@ namespace FileSystemDAL.Tests
         [TearDown]
         public void Cleanup()
         {
-            this.personRepository.DeleteFile(Path, this.files.FileId);
+            this.personRepository.DeleteFile(Path, this.fileId.Value);
             Files file;
             using (var session = NHibernateHelper.OpenSession())
             {
                 using (ITransaction transaction = session.BeginTransaction())
                 {
                     file = session.CreateCriteria(typeof(Files))
-                        .Add(Restrictions.Eq("FileId", this.files.FileId))
+                        .Add(Restrictions.Eq("FileId", this.fileId))
                         .UniqueResult<Files>();
                     session.Delete(this.folder);
                     session.Delete(this.personRepository.MyRepository.Repository);
