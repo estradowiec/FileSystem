@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7E05111B-61DE-4CAA-A38F-007D559D351C}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Atsi.GamePresentation.Flash.OnlineCasinoWrapper.Test</RootNamespace>
+    <AssemblyName>Atsi.GamePresentation.Flash.OnlineCasinoWrapper.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Atsi.Libs.Common.CommandLineParser">
+      <HintPath>..\packages\Libs.Common.CommandLineParser.1.0.0\lib\net40\Atsi.Libs.Common.CommandLineParser.dll</HintPath>
+    </Reference>
+    <Reference Include="Atsi.Libs.Common.Logger">
+      <HintPath>..\packages\Libs.Common.Logger.2.0.2\lib\net40\Atsi.Libs.Common.Logger.dll</HintPath>
+    </Reference>
+    <Reference Include="Atsi.Libs.Terminal.WpfCommon">
+      <HintPath>..\packages\Libs.Terminal.WpfCommon.2.0.1\lib\net40\Atsi.Libs.Terminal.WpfCommon.dll</HintPath>
+    </Reference>
+    <Reference Include="Atsi.Nrgs.Test.Libs.Common">
+      <HintPath>..\packages\Test.Libs.Common.1.0.1\lib\net40\Atsi.Nrgs.Test.Libs.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.2.0.1.2\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WebDriver">
+      <HintPath>..\packages\Selenium.WebDriver.2.35.0\lib\net40\WebDriver.dll</HintPath>
+    </Reference>
+    <Reference Include="WebDriver.Support">
+      <HintPath>..\packages\Selenium.Support.2.37.0\lib\net40\WebDriver.Support.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Actions\Base\FinancialServiceBaseAction.cs" />
+    <Compile Include="Actions\Base\WebDriverBaseAction.cs" />
+    <Compile Include="Actions\Base\WebSiteBaseAction.cs" />
+    <Compile Include="Actions\Check\CheckBalanceAction.cs" />
+    <Compile Include="Actions\Check\CheckBetAction.cs" />
+    <Compile Include="Actions\Check\CheckBetListAction.cs" />
+    <Compile Include="Actions\Check\CheckCreditAction.cs" />
+    <Compile Include="Actions\Check\CheckErrorMessageAction.cs" />
+    <Compile Include="Actions\Check\CheckGameLoadedAction.cs" />
+    <Compile Include="Actions\Check\CheckLinesAction.cs" />
+    <Compile Include="Actions\Check\CheckStateAction.cs" />
+    <Compile Include="Actions\IIS\Model\EServerState.cs" />
+    <Compile Include="Actions\IIS\Model\EWebSite.cs" />
+    <Compile Include="Actions\IIS\Model\ServerCredentials.cs" />
+    <Compile Include="Actions\IIS\Model\WebSiteController.cs" />
+    <Compile Include="Actions\IIS\WebSiteOfflineAction.cs" />
+    <Compile Include="Actions\IIS\WebSiteOnlineAction.cs" />
+    <Compile Include="Actions\PressButtonAction.cs" />
+    <Compile Include="Actions\Request\RequestDebugAction.cs" />
+    <Compile Include="Actions\ReturnStateToIdleAction.cs" />
+    <Compile Include="Actions\SetBalanceAction.cs" />
+    <Compile Include="Actions\SetBetAction.cs" />
+    <Compile Include="Actions\SetFlashGameSiteAction.cs" />
+    <Compile Include="Actions\SetLinesAction.cs" />
+    <Compile Include="Actions\SleepAction.cs" />
+    <Compile Include="Actions\Wait\WaitUntilMessagePresentAction.cs" />
+    <Compile Include="Actions\Wait\WaitUntilStateChangeAction.cs" />
+    <Compile Include="Actions\Wait\WaitUntilStatePresentAction.cs" />
+    <Compile Include="Enums\EButton.cs" />
+    <Compile Include="Enums\ECurrencyCode.cs" />
+    <Compile Include="Enums\EGame.cs" />
+    <Compile Include="Enums\EGameRequest.cs" />
+    <Compile Include="Enums\EMessage.cs" />
+    <Compile Include="Enums\EMode.cs" />
+    <Compile Include="Enums\EState.cs" />
+    <Compile Include="Enums\EWorkMode.cs" />
+    <Compile Include="Enums\MessageHelper.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\Financial\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="TestManager.cs" />
+    <Compile Include="Tests\AutoPlayTestGroup.cs" />
+    <Compile Include="Tests\BaseTestGroup.cs" />
+    <Compile Include="Tests\BetAndLinesTestGroup.cs" />
+    <Compile Include="Tests\CreditTestGroup.cs" />
+    <Compile Include="Tests\Helper\BetAndLinesGetter.cs" />
+    <Compile Include="Tests\Helper\TransitionBetweenStates.cs" />
+    <Compile Include="Tests\LoadingGameTestGroup.cs" />
+    <Compile Include="Tests\StateTestGroup.cs" />
+    <Compile Include="UC\TestTreeView.xaml.cs">
+      <DependentUpon>TestTreeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\ConfigurationWebDriver.cs" />
+    <Compile Include="Utils\FinancialServiceManager.cs" />
+    <Compile Include="Utils\GameDebugValues.cs" />
+    <Compile Include="Utils\GameRequest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Financial\Atsi.GamePresentation.Flash.OnlineCasinoWrapper.Test.Financial.BalanceResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\Financial\Atsi.GamePresentation.Flash.OnlineCasinoWrapper.Test.Financial.StatusResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\Financial\FinancialService.wsdl" />
+    <None Include="Service References\Financial\FinancialService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Financial\FinancialService1.wsdl" />
+    <None Include="Service References\Financial\FinancialService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Financial\FinancialService2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Financial\FinancialService3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Financial\FinancialService4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UC\TestTreeView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\packages\WebDriver.IEDriverServer.win32.2.34.0\content\IEDriverServer.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="Service References\Financial\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\Financial\configuration.svcinfo" />
+    <None Include="Service References\Financial\configuration91.svcinfo" />
+    <None Include="Service References\Financial\FinancialService.disco" />
+    <Content Include="Xslt\jquery.min.js" />
+    <Content Include="Xslt\MSTest.xslt" />
+    <Content Include="Xslt\report.css" />
+    <Content Include="Xslt\TestResult.xslt" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\Financial\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

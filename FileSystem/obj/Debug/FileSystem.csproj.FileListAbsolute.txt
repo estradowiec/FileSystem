@@ -1,4 +1,3 @@
-E:\Git\FileSystem\FileSystem\bin\FileSystem.dll.config
 E:\Git\FileSystem\FileSystem\bin\FileSystem.dll
 E:\Git\FileSystem\FileSystem\bin\FileSystem.pdb
 E:\Git\FileSystem\FileSystem\bin\Antlr3.Runtime.dll

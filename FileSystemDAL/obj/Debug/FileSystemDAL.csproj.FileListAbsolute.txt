@@ -18,8 +18,6 @@ E:\Git\FileSystem\FileSystemDAL\bin\Debug\hibernate.cfg.xml
 E:\Git\FileSystem\FileSystemDAL\bin\Debug\FileSystemDAL.dll
 E:\Git\FileSystem\FileSystemDAL\bin\Debug\FileSystemDAL.pdb
 E:\Git\FileSystem\FileSystemDAL\bin\Debug\FileSystemLogger.dll
-E:\Git\FileSystem\FileSystemDAL\bin\Debug\Iesi.Collections.dll
-E:\Git\FileSystem\FileSystemDAL\bin\Debug\NHibernate.dll
 E:\Git\FileSystem\FileSystemDAL\bin\Debug\NLog.dll
 E:\Git\FileSystem\FileSystemDAL\bin\Debug\FileSystemLogger.pdb
 E:\Git\FileSystem\FileSystemDAL\bin\Debug\Iesi.Collections.pdb

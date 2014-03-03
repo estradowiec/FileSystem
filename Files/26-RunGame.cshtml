@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout.cshtml";
+}
+
+<div id="flashGameContent">
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        flashConstructor('@ViewBag.ServerName', '@ViewBag.GameInstanceId');
+    });
+</script>
